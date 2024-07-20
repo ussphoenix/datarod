@@ -817,6 +817,26 @@ sanic = ["sanic (>=20.12.2)"]
 starlite = ["starlite (>=1.48.0)"]
 
 [[package]]
+name = "strawberry-graphql-django"
+version = "0.47.0"
+description = "Strawberry GraphQL Django extension"
+optional = false
+python-versions = "<4.0,>=3.8"
+files = [
+    {file = "strawberry_graphql_django-0.47.0-py3-none-any.whl", hash = "sha256:11ac8f18cbe6ebdcb3fd2507dbde980ad3b8944c31fc34527d2ad38fadee8427"},
+    {file = "strawberry_graphql_django-0.47.0.tar.gz", hash = "sha256:1711a417cbac9270676e987480a1842764dd724f05173cb46025ea49b5198fc8"},
+]
+
+[package.dependencies]
+asgiref = ">=3.8"
+django = ">=3.2"
+strawberry-graphql = ">=0.236.0"
+
+[package.extras]
+debug-toolbar = ["django-debug-toolbar (>=3.4)"]
+enum = ["django-choices-field (>=2.2.2)"]
+
+[[package]]
 name = "typing-extensions"
 version = "4.12.2"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -961,4 +981,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "00eb9cd9ab245143b04b69222e8bf75a467fcc78f25d12280fdd188b64d158de"
+content-hash = "32cbe4c445bf9f6ac0fc6761fcb12fc156477d07a1430bfc234c20a4cd659b79"

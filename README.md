@@ -25,6 +25,7 @@ docker compose up
 ```
 
 Navigate to [localhost:8000/admin](http://localhost:8000/admin) to view the backend admin
+Navigate to [localhost:8000/graphql](http://localhost:8000/graphql) to view the graphql schema browser
 
 ## Backend (`/backend`)
 

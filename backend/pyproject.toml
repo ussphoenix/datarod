@@ -8,12 +8,13 @@ readme = "../README.md"
 [tool.poetry.dependencies]
 python = "^3.12"
 django = "^5.0.7"
-strawberry-graphql = "^0.236.0"
 gunicorn = "^22.0.0"
 discord-py = "^2.4.0"
 mysqlclient = "^2.2.4"
 django-rq = "^2.10.2"
 requests = "^2.32.3"
+strawberry-graphql-django = "^0.47.0"
+strawberry-graphql = "^0.236.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"
