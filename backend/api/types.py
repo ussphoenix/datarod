@@ -1,6 +1,9 @@
+from typing import Optional
+
 import strawberry_django
 from strawberry import auto
-from archive.models import DiscordChannel, Tag, DiscordMessage, DiscordAuthor, Identity
+
+from archive.models import Author, Channel, Message, Nickname, Tag
 
 
 @strawberry_django.type(Tag)
@@ -14,30 +17,38 @@ class Tag:
     end_date: auto
 
 
-@strawberry_django.type(DiscordAuthor)
+@strawberry_django.type(Author)
 class Author:
     id: auto
-    identities: list["Identity"]
+    discord_id: auto
+    name: auto
 
 
-@strawberry_django.type(Identity)
-class Identity:
+@strawberry_django.type(Nickname)
+class Nickname:
     id: auto
     discord_author: Author
     name: auto
+    avatar: auto
+    start_date: auto
+    end_date: auto
 
 
-@strawberry_django.type(DiscordChannel)
+@strawberry_django.type(Channel)
 class Channel:
     id: auto
+    discord_id: auto
     name: auto
     tag: Tag
+    topic: auto
+    archive_date: auto
 
 
-@strawberry_django.type(DiscordMessage)
+@strawberry_django.type(Message)
 class Message:
     id: auto
+    discord_id: auto
     channel: Channel
     timestamp: auto
     raw_message: auto
-    author: Author
+    nickname: Optional[Nickname]

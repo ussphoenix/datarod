@@ -61,3 +61,13 @@ Generally, the archive workflow might look like this:
 3. In Discord, open a channel to be archived. Use the `/archive` slash command with the new tag to begin the archive process. (e.g. `/archive spaceships-and-shenanigans`)
 4. Wait to receive a message from the bot indicating the archive process is complete
 5. Check the archive, and then delete the channel
+
+Reset everything:
+
+```
+from django.core.cache import cache
+from archive.models import Channel, Author
+Channel.objects.all().delete()
+Author.objects.all().delete()
+cache.clear()
+```
