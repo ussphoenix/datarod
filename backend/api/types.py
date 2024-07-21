@@ -1,8 +1,13 @@
+from typing import Optional
+
 import graphene
 from graphene import ObjectType, relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
+from django.urls import reverse
+
+from api.utils import login_required
 from archive.models import Author, Channel, Message, Nickname, Tag
 
 
@@ -32,6 +37,7 @@ class TagQuery(ObjectType):
     tag = relay.Node.Field(TagType)
     tags = DjangoFilterConnectionField(TagType)
 
+    @login_required
     def resolve_tags(root, info):
         return Tag.objects.all()
 
@@ -55,6 +61,7 @@ class ChannelQuery(ObjectType):
     channel = relay.Node.Field(ChannelType)
     channels = DjangoFilterConnectionField(ChannelType)
 
+    @login_required
     def resolve_channels(root, info):
         return Channel.objects.all()
 
@@ -74,6 +81,7 @@ class AuthorQuery(ObjectType):
     author = relay.Node.Field(AuthorType)
     authors = DjangoFilterConnectionField(AuthorType)
 
+    @login_required
     def resolve_authors(root, info):
         return Author.objects.all()
 
@@ -97,6 +105,7 @@ class NicknameQuery(ObjectType):
     nickname = relay.Node.Field(NicknameType)
     nicknames = DjangoFilterConnectionField(NicknameType)
 
+    @login_required
     def resolve_authors(root, info):
         return Nickname.objects.all()
 
@@ -129,5 +138,49 @@ class MessageQuery(ObjectType):
     message = relay.Node.Field(MessageType)
     messages = DjangoFilterConnectionField(MessageType)
 
+    @login_required
     def resolve_authors(root, info):
         return Message.objects.all()
+
+
+class MeType(ObjectType):
+    username = graphene.String()
+    is_staff = graphene.Boolean()
+    is_authenticated = graphene.Boolean()
+    login_url = graphene.String()
+    logout_url = graphene.String()
+
+    def resolve_username(parent, info) -> Optional[str]:
+        if info.context.user:
+            return info.context.user.username
+        return None
+
+    def resolve_is_staff(parent, info) -> Optional[bool]:
+        if info.context.user:
+            return info.context.user.is_staff
+        return None
+
+    def resolve_is_authenticated(parent, info) -> Optional[bool]:
+        if info.context.user:
+            return info.context.user.is_authenticated and info.context.user.is_active
+        return None
+
+    def resolve_login_url(parent, info) -> str:
+        return info.context.build_absolute_uri(
+            reverse("social:begin", args=["discord"])
+        )
+
+    def resolve_logout_url(parent, info) -> str:
+        return info.context.build_absolute_uri(
+            reverse("social:disconnect", args=["discord"])
+        )
+
+
+class MeQuery(ObjectType):
+    me = graphene.Field(MeType)
+
+    def resolve_me(root, info):
+        """`Me` is constructed from info.context.user, so there
+        is nothing we need to resolve here
+        """
+        return {}

@@ -1,6 +1,13 @@
 import graphene
 
-from api.types import AuthorQuery, ChannelQuery, MessageQuery, NicknameQuery, TagQuery
+from api.types import (
+    AuthorQuery,
+    ChannelQuery,
+    MeQuery,
+    MessageQuery,
+    NicknameQuery,
+    TagQuery,
+)
 
 
 class Query(
@@ -9,6 +16,7 @@ class Query(
     AuthorQuery,
     NicknameQuery,
     MessageQuery,
+    MeQuery,
     graphene.ObjectType,
 ): ...
 
