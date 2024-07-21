@@ -29,7 +29,7 @@ Navigate to [localhost:8000/graphql](http://localhost:8000/graphql) to view the 
 
 ## Backend (`/backend`)
 
-Backend service for datarod and Discord bot for archive data ingestion. [Django](https://docs.djangoproject.com/en/5.0/) + [strawberry](https://github.com/strawberry-graphql/strawberry-django) + [discord.py](https://discordpy.readthedocs.io/en/latest).
+Backend service for datarod and Discord bot for archive data ingestion. [Django](https://docs.djangoproject.com/en/5.0/) + [graphene](https://docs.graphene-python.org/projects/django/en/latest/) + [discord.py](https://discordpy.readthedocs.io/en/latest).
 
 ### Apps
 

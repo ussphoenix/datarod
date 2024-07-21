@@ -62,9 +62,6 @@ def archive_messages(channel: Channel, before: str) -> Tuple[str, bool]:
         if not created:
             continue  # Don't re-archive a message we have previously archived
         nickname = archive_user(user_id=message_details.get("author", {}).get("id"))
-        print("nickname")
-        print(nickname)
-        print("=" * 8)
         if nickname:
             message.nickname = nickname
         message.timestamp = datetime.datetime.fromisoformat(

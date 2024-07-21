@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Other Apps
     "django_rq",
+    "django_filters",
+    "graphene_django",
     # Project Apps
     "bot",
     "api",
@@ -160,14 +162,6 @@ RQ_QUEUES = {
         "PORT": 6379,
         "DB": 0,
     },
-}
-
-
-# Strawberry-Django
-
-STRAWBERRY_DJANGO = {
-    "FIELD_DESCRIPTION_FROM_HELP_TEXT": True,
-    "TYPE_DESCRIPTION_FROM_MODEL_DOCSTRING": True,
 }
 
 

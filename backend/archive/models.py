@@ -131,8 +131,6 @@ class Nickname(models.Model):
             # that the new nickname should become the current nickname
             current.end_date = datetime.datetime.now()
             current.save()
-
-        print(f"Create_for_author new: {new}")
         return new
 
 
