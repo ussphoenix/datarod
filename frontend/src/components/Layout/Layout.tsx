@@ -1,13 +1,13 @@
 import { useState } from "react";
 
+import constants from "@constants";
 import {
   Dialog,
   DialogBackdrop,
-  DialogPanel,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuItems,
+  DialogPanel, // Menu,
+  // MenuButton,
+  // MenuItem,
+  // MenuItems,
   TransitionChild,
 } from "@headlessui/react";
 import { HashtagIcon } from "@heroicons/react/20/solid";
@@ -18,14 +18,21 @@ import {
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import clsx from "clsx";
+import { NavLink } from "react-router-dom";
+import { Outlet } from "react-router-dom";
+
+interface LayoutProps {
+  children?: React.ReactNode;
+}
 
 const navigation = [
-  { name: "Events", href: "#", icon: CalendarIcon, current: true },
-  { name: "Crew Quarters", href: "#", icon: UsersIcon, current: false },
-  { name: "All Channels", href: "#", icon: HashtagIcon, current: false },
+  { name: "Events", href: constants.ROUTES.EVENTS, icon: CalendarIcon },
+  { name: "Crew Quarters", href: "/12", icon: UsersIcon },
+  { name: "All Channels", href: "/123", icon: HashtagIcon },
 ];
 
-export default function Example() {
+export default function Layout(props: LayoutProps) {
+  const { children } = props;
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
@@ -64,9 +71,12 @@ export default function Example() {
               </TransitionChild>
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                 <div className="flex h-16 shrink-0 items-center">
-                  <span className="text-xl font-bold text-white">
+                  <NavLink
+                    className="font-title text-3xl tracking-wide text-white"
+                    to={constants.ROUTES.HOME}
+                  >
                     Phoenix Archive
-                  </span>
+                  </NavLink>
                 </div>
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -74,26 +84,28 @@ export default function Example() {
                       <ul role="list" className="-mx-2 space-y-1">
                         {navigation.map((item) => (
                           <li key={item.name}>
-                            <a
-                              href={item.href}
-                              className={clsx(
-                                item.current
-                                  ? "bg-lcarsPurple-500 text-white"
-                                  : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
-                                "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
-                              )}
+                            <NavLink
+                              to={item.href}
+                              className={({ isActive }) =>
+                                clsx(
+                                  isActive
+                                    ? "bg-lcarsPurple-500 text-white"
+                                    : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
+                                  "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
+                                )
+                              }
                             >
                               <item.icon
                                 aria-hidden="true"
                                 className="h-6 w-6 shrink-0"
                               />
                               {item.name}
-                            </a>
+                            </NavLink>
                           </li>
                         ))}
                       </ul>
                     </li>
-                    <li className="mt-auto">
+                    {/* <li className="mt-auto">
                       <Menu as="div">
                         <MenuButton className="group flex w-full items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-lcarsRed hover:text-white">
                           <img
@@ -118,7 +130,7 @@ export default function Example() {
                           </MenuItem>
                         </MenuItems>
                       </Menu>
-                    </li>
+                    </li> */}
                   </ul>
                 </nav>
               </div>
@@ -128,11 +140,14 @@ export default function Example() {
 
         {/* Static sidebar menu */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72 lg:flex-col">
-          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-900 px-6 pb-4">
+          <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-900 px-6 py-4">
             <div className="flex h-16 shrink-0 items-center">
-              <span className="text-2xl font-bold text-white">
+              <NavLink
+                className="font-title text-4xl tracking-wide text-white"
+                to={constants.ROUTES.HOME}
+              >
                 Phoenix Archive
-              </span>
+              </NavLink>
             </div>
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
@@ -140,28 +155,30 @@ export default function Example() {
                   <ul role="list" className="-mx-2 space-y-1">
                     {navigation.map((item) => (
                       <li key={item.name}>
-                        <a
-                          href={item.href}
-                          className={clsx(
-                            item.current
-                              ? "bg-lcarsPurple-500 text-white"
-                              : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
-                            "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
-                          )}
+                        <NavLink
+                          to={item.href}
+                          className={({ isActive }) =>
+                            clsx(
+                              isActive
+                                ? "bg-lcarsPurple-500 text-white"
+                                : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
+                            )
+                          }
                         >
                           <item.icon
                             aria-hidden="true"
                             className="h-6 w-6 shrink-0"
                           />
                           {item.name}
-                        </a>
+                        </NavLink>
                       </li>
                     ))}
                   </ul>
                 </li>
 
                 {/* User account menu */}
-                <li className="mt-auto">
+                {/* <li className="mt-auto">
                   <Menu as="div">
                     <MenuButton className="group flex w-full items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-lcarsRed hover:text-white">
                       <img
@@ -186,7 +203,7 @@ export default function Example() {
                       </MenuItem>
                     </MenuItems>
                   </Menu>
-                </li>
+                </li> */}
               </ul>
             </nav>
           </div>
@@ -202,13 +219,21 @@ export default function Example() {
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon aria-hidden="true" className="h-6 w-6" />
           </button>
-          <div className="text-xl font-semibold">Phoenix Archive</div>
+          <NavLink
+            className="font-title text-3xl tracking-wide text-white"
+            to={constants.ROUTES.HOME}
+          >
+            Phoenix Archive
+          </NavLink>
         </div>
 
         {/* Content section */}
         <div className="lg:pl-72">
           <main className="py-10">
-            <div className="px-4 sm:px-6 lg:px-8">Content</div>
+            <div className="px-4 sm:px-6 lg:px-8">
+              {children}
+              <Outlet />
+            </div>
           </main>
         </div>
       </div>

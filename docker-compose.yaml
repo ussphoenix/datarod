@@ -1,4 +1,15 @@
 services:
+  frontend:
+    tty: true
+    build:
+      context: frontend
+      target: dependencies
+    ports:
+      - 8080:8080
+    volumes:
+      - ./frontend:/app:rw
+    command: npm run dev
+
   backend:
     tty: true
     build: backend

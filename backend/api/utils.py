@@ -8,7 +8,7 @@ def login_required(f: Callable) -> Callable:
     Raise a GraphQLError if the user is not authenticated or valid.
     """
 
-    def inner(root, info):
+    def inner(root, info, *args, **kwargs):
         if info.context and info.context.user:
             if info.context.user.is_authenticated and info.context.user.is_active:
                 return f(root, info)
@@ -22,7 +22,7 @@ def staff_required(f: Callable) -> Callable:
     Raise a GraphQLError if the user is not staff.
     """
 
-    def inner(root, info):
+    def inner(root, info, *args, **kwargs):
         if info.context and info.context.user:
             if info.context.user.is_staff:
                 return f(root, info)

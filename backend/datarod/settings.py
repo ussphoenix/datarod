@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 
+from corsheaders.defaults import default_headers
+
 from utils.environment import get_env
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,6 +31,18 @@ DEBUG = True
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
+CORS_ALLOW_ALL_ORIGINS = True  # Should be off in production
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGIN_REGEXES = [
+    r"^https:\/\/(.+)?\.?phoenixarchive\.com$",
+]
+CORS_ALLOW_HEADERS = (
+    *default_headers,
+    "accept-language",
+)
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
+SESSION_COOKIE_HTTPONLY = False
 
 # Application definition
 
@@ -41,6 +55,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Other Apps
+    "corsheaders",
     "social_django",
     "django_rq",
     "django_filters",
@@ -52,6 +67,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -173,7 +189,7 @@ AUTHENTICATION_BACKENDS = (
 )
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_REVOKE_TOKENS_ON_DISCONNECT = True
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = "https://login/"
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = "http://localhost:8080/"
 SOCIAL_AUTH_LOGIN_ERROR_URL = "https://error/"
 SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = "https://error/"
 SOCIAL_AUTH_DISCORD_KEY = get_env("SOCIAL_AUTH_DISCORD_KEY")

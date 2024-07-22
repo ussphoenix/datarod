@@ -26,13 +26,12 @@
     /* Root project path */
     "paths": {
       "@components": ["./src/components/"],
-      // "@constants": ["./src/constants.ts"],
-      // "@hooks": ["./src/hooks/"],
-      // "@providers/*": ["./src/providers/*"],
-      // "@types": ["./src/types.ts"],
-      // "@utils/*": ["./src/utils/*"],
-      // "@views": ["./src/views/"],
-      // "@views/*": ["./src/views/*"]
+      "@views": ["./src/views/"],
+      "@views/*": ["./src/views/*"],
+      "@constants": ["./src/constants.ts"],
+      "@types": ["./src/types.ts"],
+      "@queries": ["./src/queries.ts"],
+      "@providers/*": ["./src/providers/*"]
     }
   },
   "include": ["src"]

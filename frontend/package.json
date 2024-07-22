@@ -28,11 +28,13 @@
     "importOrderSortSpecifiers": true
   },
   "dependencies": {
+    "@apollo/client": "^3.10.8",
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
     "axios": "^1.7.2",
     "clsx": "^2.1.1",
     "formik": "^2.4.6",
+    "graphql": "^16.9.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-loading-skeleton": "^3.4.0",

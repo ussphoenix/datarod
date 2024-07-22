@@ -24,8 +24,11 @@ docker compose run --rm  backend python manage.py createsuperuser
 docker compose up
 ```
 
-Navigate to [localhost:8000/admin](http://localhost:8000/admin) to view the backend admin
-Navigate to [localhost:8000/graphql](http://localhost:8000/graphql) to view the graphql schema browser
+Once the project has started up:
+
+- Navigate to [localhost:8080](http://localhost:8080) to view the frontend app
+- Navigate to [localhost:8000/admin](http://localhost:8000/admin) to view the backend admin
+- Navigate to [localhost:8000/graphql](http://localhost:8000/graphql) to view the graphql schema browser
 
 ## Backend (`/backend`)
 
@@ -48,7 +51,7 @@ Backend service for datarod and Discord bot for archive data ingestion. [Django]
 
 Frontend service for the Phoenix archive. React + Typescript + Vite.
 
-## Application Concepts
+## Design Concepts
 
 Messages are associated with Channels. Channels are associated with Tags, which in turn have a Tag Type. The Tag Type could be something like "Event" or "Crew Quarters".
 
