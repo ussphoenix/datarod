@@ -1,24 +1,32 @@
+import { lazy } from "react";
+
 import { AuthRequired, Layout } from "@components";
 import constants from "@constants";
 import { ClientProvider } from "@providers/ClientProvider";
 import { MeProvider } from "@providers/MeProvider";
 import { ErrorView } from "@views/ErrorView";
-import { EventsView } from "@views/EventsView";
 import { HomeView } from "@views/HomeView";
 import { NotFoundView } from "@views/NotFoundView";
 import { SuspenseView } from "@views/SuspenseView";
+import { SkeletonTheme } from "react-loading-skeleton";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
+
+import "react-loading-skeleton/dist/skeleton.css";
+
+const TagsViews = lazy(() => import("@views/TagsView/TagsView"));
 
 function Root(): React.ReactNode {
   return (
     <>
-      <ClientProvider>
-        <MeProvider>
-          <AuthRequired>
-            <Layout />
-          </AuthRequired>
-        </MeProvider>
-      </ClientProvider>
+      <SkeletonTheme baseColor="#10171E" highlightColor="#15202B">
+        <ClientProvider>
+          <MeProvider>
+            <AuthRequired>
+              <Layout />
+            </AuthRequired>
+          </MeProvider>
+        </ClientProvider>
+      </SkeletonTheme>
     </>
   );
 }
@@ -34,7 +42,14 @@ const router = createBrowserRouter([
     ),
     children: [
       { path: constants.ROUTES.HOME, element: <HomeView /> },
-      { path: constants.ROUTES.EVENTS, element: <EventsView /> },
+      {
+        path: constants.ROUTES.EVENTS,
+        element: <TagsViews tagType="EVENT" />,
+      },
+      {
+        path: constants.ROUTES.QUARTERS,
+        element: <TagsViews tagType="QUARTERS" />,
+      },
     ],
   },
   {

@@ -3,5 +3,7 @@ export default {
   ROUTES: {
     HOME: "",
     EVENTS: "/events",
+    QUARTERS: "/quarters",
+    CHANNELS: "/channels",
   },
 };

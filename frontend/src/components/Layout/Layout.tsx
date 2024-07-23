@@ -27,7 +27,7 @@ interface LayoutProps {
 
 const navigation = [
   { name: "Events", href: constants.ROUTES.EVENTS, icon: CalendarIcon },
-  { name: "Crew Quarters", href: "/12", icon: UsersIcon },
+  { name: "Crew Quarters", href: constants.ROUTES.QUARTERS, icon: UsersIcon },
   { name: "All Channels", href: "/123", icon: HashtagIcon },
 ];
 

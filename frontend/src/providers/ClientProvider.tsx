@@ -1,4 +1,5 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { relayStylePagination } from "@apollo/client/utilities";
 import constants from "@constants";
 
 /**
@@ -11,7 +12,32 @@ function ClientProvider(props: React.PropsWithChildren): React.ReactNode {
   const client = new ApolloClient({
     uri: constants.BACKEND_URL,
     credentials: "include",
-    cache: new InMemoryCache(),
+    defaultOptions: {
+      watchQuery: {
+        fetchPolicy: "cache-and-network",
+        errorPolicy: "all",
+      },
+      query: {
+        // @ts-ignore - for some reason the underlying FetchPolicy type in Apollo is missing this policy
+        fetchPolicy: "cache-and-network",
+        errorPolicy: "all",
+      },
+      mutate: {
+        errorPolicy: "all",
+      },
+    },
+    cache: new InMemoryCache({
+      typePolicies: {
+        Query: {
+          fields: {
+            tags: {
+              keyArgs: ["id", "tagType"],
+              ...relayStylePagination(),
+            },
+          },
+        },
+      },
+    }),
   });
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
