@@ -23,6 +23,7 @@ export type MeGQLType = {
 
 export type TagGQLType = {
   id: string;
+  slug: string;
   name: string;
   description?: string;
   startDate?: string;

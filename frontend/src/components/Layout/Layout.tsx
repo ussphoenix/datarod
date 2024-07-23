@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 
 import constants from "@constants";
 import {
@@ -17,6 +17,7 @@ import {
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { MeContext } from "@providers/MeProvider";
 import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
@@ -34,6 +35,7 @@ const navigation = [
 export default function Layout(props: LayoutProps) {
   const { children } = props;
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { me } = useContext(MeContext);
 
   return (
     <>
@@ -177,6 +179,17 @@ export default function Layout(props: LayoutProps) {
                   </ul>
                 </li>
 
+                {me?.logoutUrl && me?.isAuthenticated && (
+                  <li className="mt-auto">
+                    <NavLink
+                      to={me?.logoutUrl}
+                      className="rounded-md bg-lcarsBlue-600 px-4 py-2 text-sm hover:bg-lcarsPurple-100"
+                    >
+                      Logout
+                    </NavLink>
+                  </li>
+                )}
+
                 {/* User account menu */}
                 {/* <li className="mt-auto">
                   <Menu as="div">
@@ -231,8 +244,7 @@ export default function Layout(props: LayoutProps) {
         <div className="lg:pl-72">
           <main className="py-10">
             <div className="px-4 sm:px-6 lg:px-8">
-              {children}
-              <Outlet />
+              {children ? children : <Outlet />}
             </div>
           </main>
         </div>

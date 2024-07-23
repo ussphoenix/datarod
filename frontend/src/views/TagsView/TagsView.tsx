@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 
 import { useQuery } from "@apollo/client";
-import { Breadcrumbs, ReachedBottom } from "@components";
+import { Breadcrumbs, GridLoading, ReachedBottom } from "@components";
 import constants from "@constants";
 import { CalendarIcon, UsersIcon } from "@heroicons/react/20/solid";
 import { GET_TAGS } from "@queries";
 import type { RelayEdges, TagGQLType } from "@types";
-import Skeleton from "react-loading-skeleton";
+import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 
 type TagType = "EVENT" | "QUARTERS";
@@ -48,6 +48,7 @@ export default function TagsView(props: TagsViewProps): React.ReactNode {
   const { loading, data, fetchMore, error } = useQuery<RelayEdges<TagGQLType>>(
     GET_TAGS,
     {
+      fetchPolicy: "network-only", // can't cache tag results because of inability to differentiate between tag types
       variables: { tagType: tagType, first: 21 },
     },
   );
@@ -94,7 +95,7 @@ export default function TagsView(props: TagsViewProps): React.ReactNode {
               </div>
               <div className="mt-auto">
                 <NavLink
-                  to={`${constants.ROUTES.CHANNELS}?tag_type=${tagDetails[tagType].param}&tag=${edge?.node?.id}`}
+                  to={`${constants.ROUTES.CHANNELS}?tag_type=${tagDetails[tagType].param}&tag=${edge?.node?.slug}`}
                   className="rounded-md bg-lcarsAqua p-2 hover:bg-lcarsBlue-400"
                 >
                   Browse Channels
@@ -105,25 +106,8 @@ export default function TagsView(props: TagsViewProps): React.ReactNode {
       </div>
 
       {loading && (
-        <div className="grid-col-1 grid gap-5 md:grid-cols-3">
-          {[1, 2, 3].map((item) => (
-            <div
-              key={item}
-              className="flex grow flex-col space-y-2 rounded-md bg-gray-900 p-4"
-            >
-              <div className="flex-1">
-                <h1 className="text-lg font-semibold">
-                  <Skeleton />
-                </h1>
-                <p className="pb-6 text-gray-300">
-                  <Skeleton />
-                </p>
-              </div>
-              <div className="mt-auto">
-                <Skeleton />
-              </div>
-            </div>
-          ))}
+        <div className={clsx(data && "pt-5")}>
+          <GridLoading />
         </div>
       )}
 

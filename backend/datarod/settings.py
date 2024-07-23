@@ -30,7 +30,7 @@ SECRET_KEY = "django-insecure-t!m@=it0!#88-n063bw##vtb=^%%__y7tei#2jpl$%l2w3@w_=
 DEBUG = True
 
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
-
+CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://localhost:8000"]
 CORS_ALLOW_ALL_ORIGINS = True  # Should be off in production
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGIN_REGEXES = [
@@ -190,8 +190,7 @@ AUTHENTICATION_BACKENDS = (
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_REVOKE_TOKENS_ON_DISCONNECT = True
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = "http://localhost:8080/"
-SOCIAL_AUTH_LOGIN_ERROR_URL = "https://error/"
-SOCIAL_AUTH_DISCONNECT_REDIRECT_URL = "https://error/"
+SOCIAL_AUTH_LOGIN_ERROR_URL = "http://error/"
 SOCIAL_AUTH_DISCORD_KEY = get_env("SOCIAL_AUTH_DISCORD_KEY")
 SOCIAL_AUTH_DISCORD_SECRET = get_env("SOCIAL_AUTH_DISCORD_SECRET")
 SOCIAL_AUTH_PIPELINE = (
@@ -234,6 +233,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 # Datarod app settings
 
+LOGOUT_URL = "https://discord.com/app"
 DISCORD_BASE_URL = "http://twilight"
 DISCORD_API_BASE_URL = f"{DISCORD_BASE_URL}/api/v10/"
 DISCORD_GUILD_ID = get_env("DISCORD_GUILD_ID", is_int=True)

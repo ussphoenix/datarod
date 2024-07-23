@@ -171,9 +171,7 @@ class MeType(ObjectType):
         )
 
     def resolve_logout_url(parent, info) -> str:
-        return info.context.build_absolute_uri(
-            reverse("social:disconnect", args=["discord"])
-        )
+        return info.context.build_absolute_uri(reverse("logout"))
 
 
 class MeQuery(ObjectType):

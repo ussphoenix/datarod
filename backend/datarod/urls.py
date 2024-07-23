@@ -20,11 +20,23 @@ from graphene_django.views import GraphQLView
 from django.contrib import admin
 from django.urls import include, path
 from django.views.decorators.csrf import csrf_exempt
+from django.shortcuts import redirect
+from django.conf import settings
 
 from api.schema import schema
 
+
+from django.contrib.auth import logout
+
+
+def logout_view(request):
+    logout(request)
+    return redirect(settings.LOGOUT_URL)
+
+
 urlpatterns = [
     path("", include("social_django.urls", namespace="social")),
+    path("logout", logout_view, name="logout"),
     path("admin/", admin.site.urls),
     path("django-rq/", include("django_rq.urls")),
     path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),

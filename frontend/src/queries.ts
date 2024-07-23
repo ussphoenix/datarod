@@ -32,6 +32,7 @@ export const GET_TAGS = gql`
       edges {
         node {
           id
+          slug
           tagType
           name
           description

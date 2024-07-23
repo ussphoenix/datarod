@@ -1,6 +1,6 @@
 import { useContext } from "react";
 
-import { Layout } from "@components";
+import { GridLoading, Layout } from "@components";
 import { MeContext, type MeContextInterface } from "@providers/MeProvider";
 import { ErrorView } from "@views/ErrorView";
 import { SuspenseView } from "@views/SuspenseView";
@@ -13,16 +13,7 @@ export default function AuthRequired(
   props: React.PropsWithChildren,
 ): React.ReactNode {
   const { children } = props;
-  const { me, meLoading, meError }: MeContextInterface = useContext(MeContext);
-
-  // Still loading in context provider
-  if (meLoading) {
-    return (
-      <Layout>
-        <SuspenseView />
-      </Layout>
-    );
-  }
+  const { me, meError }: MeContextInterface = useContext(MeContext);
 
   // Loading failed (context provider displayed an error toast)
   if (meError) {
@@ -37,16 +28,17 @@ export default function AuthRequired(
     if (!me?.isAuthenticated && me?.loginUrl) {
       // user is unauthenticated, redirect to login
       window.location.replace(me.loginUrl);
+      return <SuspenseView />;
     }
     if (me?.isAuthenticated) {
       return children;
     }
   }
 
-  // Catch-all error, handle a strange edge case like loginUrl absent
+  // Still loading in context provider
   return (
     <Layout>
-      <ErrorView />
+      <GridLoading />
     </Layout>
   );
 }

@@ -7,8 +7,6 @@ import { MeProvider } from "@providers/MeProvider";
 import { ErrorView } from "@views/ErrorView";
 import { HomeView } from "@views/HomeView";
 import { NotFoundView } from "@views/NotFoundView";
-import { SuspenseView } from "@views/SuspenseView";
-import { SkeletonTheme } from "react-loading-skeleton";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import "react-loading-skeleton/dist/skeleton.css";
@@ -18,15 +16,13 @@ const TagsViews = lazy(() => import("@views/TagsView/TagsView"));
 function Root(): React.ReactNode {
   return (
     <>
-      <SkeletonTheme baseColor="#10171E" highlightColor="#15202B">
-        <ClientProvider>
-          <MeProvider>
-            <AuthRequired>
-              <Layout />
-            </AuthRequired>
-          </MeProvider>
-        </ClientProvider>
-      </SkeletonTheme>
+      <ClientProvider>
+        <MeProvider>
+          <AuthRequired>
+            <Layout />
+          </AuthRequired>
+        </MeProvider>
+      </ClientProvider>
     </>
   );
 }
@@ -63,7 +59,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} fallbackElement={<SuspenseView />} />;
+  return <RouterProvider router={router} fallbackElement={null} />;
 }
 
 export default App;
