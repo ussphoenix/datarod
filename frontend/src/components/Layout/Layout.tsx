@@ -29,7 +29,7 @@ interface LayoutProps {
 const navigation = [
   { name: "Events", href: constants.ROUTES.EVENTS, icon: CalendarIcon },
   { name: "Crew Quarters", href: constants.ROUTES.QUARTERS, icon: UsersIcon },
-  { name: "All Channels", href: "/123", icon: HashtagIcon },
+  { name: "All Channels", href: constants.ROUTES.CHANNELS, icon: HashtagIcon },
 ];
 
 export default function Layout(props: LayoutProps) {
@@ -242,7 +242,7 @@ export default function Layout(props: LayoutProps) {
 
         {/* Content section */}
         <div className="lg:pl-72">
-          <main className="py-10">
+          <main className="py-5">
             <div className="px-4 sm:px-6 lg:px-8">
               {children ? children : <Outlet />}
             </div>

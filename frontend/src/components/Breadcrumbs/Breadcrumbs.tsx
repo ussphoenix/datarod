@@ -3,8 +3,8 @@ import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 import { Fragment } from "react/jsx-runtime";
 
-interface Breadcrumb {
-  name: string;
+export interface Breadcrumb {
+  name: React.ReactNode;
   link: string;
   icon?: React.ForwardRefExoticComponent<
     Omit<React.SVGProps<SVGSVGElement>, "ref"> & {
@@ -22,7 +22,7 @@ export default function Breadcrumbs(props: BreacrumbsProps): React.JSX.Element {
   return (
     <div className="text-x mb-6 flex items-center space-x-3 border-b border-gray-700 pb-2 text-lg">
       {breadcrumbs.map((item, index) => (
-        <Fragment key={item.name}>
+        <Fragment key={index}>
           <div>
             <NavLink
               to={item.link}

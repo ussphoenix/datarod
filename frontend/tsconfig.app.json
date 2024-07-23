@@ -31,7 +31,8 @@
       "@constants": ["./src/constants.ts"],
       "@types": ["./src/types.ts"],
       "@queries": ["./src/queries.ts"],
-      "@providers/*": ["./src/providers/*"]
+      "@providers/*": ["./src/providers/*"],
+      "@utils/*": ["./src/utils/*"]
     }
   },
   "include": ["src"]

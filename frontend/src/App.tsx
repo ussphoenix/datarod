@@ -11,7 +11,8 @@ import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import "react-loading-skeleton/dist/skeleton.css";
 
-const TagsViews = lazy(() => import("@views/TagsView/TagsView"));
+const TagsView = lazy(() => import("@views/TagsView/TagsView"));
+const ChannelsView = lazy(() => import("@views/ChannelsView/ChannelsView"));
 
 function Root(): React.ReactNode {
   return (
@@ -40,11 +41,15 @@ const router = createBrowserRouter([
       { path: constants.ROUTES.HOME, element: <HomeView /> },
       {
         path: constants.ROUTES.EVENTS,
-        element: <TagsViews tagType="EVENT" />,
+        element: <TagsView tagType="EVENT" />,
       },
       {
         path: constants.ROUTES.QUARTERS,
-        element: <TagsViews tagType="QUARTERS" />,
+        element: <TagsView tagType="QUARTERS" />,
+      },
+      {
+        path: constants.ROUTES.CHANNELS,
+        element: <ChannelsView />,
       },
     ],
   },
