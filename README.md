@@ -7,7 +7,7 @@ Browseable Discord archive website and archive bot
 - [docker](https://docs.docker.com/engine/install/)
 - [docker compose](https://docs.docker.com/compose/install/)
 
-## Quickstart
+## Development Quickstart
 
 Run the whole project:
 
@@ -29,6 +29,10 @@ Once the project has started up:
 - Navigate to [localhost:8080](http://localhost:8080) to view the frontend app
 - Navigate to [localhost:8000/admin](http://localhost:8000/admin) to view the backend admin
 - Navigate to [localhost:8000/graphql](http://localhost:8000/graphql) to view the graphql schema browser
+
+## Installation
+
+[Summary Installation Guide](INSTALLATION.md)
 
 ## Backend (`/backend`)
 

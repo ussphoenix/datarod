@@ -11,25 +11,40 @@ class Discord(DiscordOAuth2):
     Used in the pipeline to confirm the user is in our Discord guild
     """
 
-    DEFAULT_SCOPE = ["identify", "guilds"]
+    DEFAULT_SCOPE = ["identify", "guilds", "guilds.members.read"]
 
     def user_data(self, access_token, *args, **kwargs):
         # Basic user data from superclass
         data = super().user_data(access_token, *args, **kwargs)
 
-        # Fetch and append guild information
-        url = "https://%s/api/users/@me/guilds" % self.HOSTNAME
+        # Fetch and append guild information (roles)
+        url = f"https://{self.HOSTNAME}/api/users/@me/guilds/{settings.DISCORD_GUILD_ID}/member"
         auth_header = {"Authorization": "Bearer %s" % access_token}
-        guilds = self.get_json(url, headers=auth_header)
-        guild_ids = []
-        if guilds:
-            guild_ids = [g.get("id") for g in guilds]
-        data["guilds"] = guild_ids
+        try:
+            response = self.get_json(url, headers=auth_header)
+        except requests.exceptions.HTTPError:
+            # If user not in guild, stop right here
+            raise AuthForbidden(backend)
+        else:
+            guild_data = {"roles": response.get("roles", [])}
+        data["guild"] = guild_data
         return data
 
 
-def guild_required_pipeline(backend, response, *args, **kwargs):
-    """Make sure that the user is a member of the configured guild"""
-    if backend.name.lower() == "discord":
-        if str(settings.DISCORD_GUILD_ID) not in response.get("guilds", []):
-            raise AuthForbidden(backend)
+def set_guild_permissions(user, response, *args, **kwargs):
+    """If the user has the proper guild role, promote them to staff
+    Otherwise, assume the role was removed and demote
+    """
+    should_be_staff = settings.DISCORD_GUILD_STAFF_ROLE_ID in response.get(
+        "guild", {}
+    ).get("roles")
+    print(f"should be staff? {should_be_staff}")
+    print(settings.DISCORD_GUILD_STAFF_ROLE_ID, response.get("guild", {}).get("roles"))
+
+    if user.is_staff and not should_be_staff:
+        user.is_staff = False
+        user.save()
+
+    if not user.is_staff and should_be_staff:
+        user.is_staff = True
+        user.save()
