@@ -127,3 +127,35 @@ export const GET_MESSAGES = gql`
     }
   }
 `;
+
+export const MUTATE_TAG = gql`
+  mutation MutateTag(
+    $id: ID
+    $name: String!
+    $slug: String!
+    $description: String
+    $tagType: String!
+    $startDate: String
+    $endDate: String
+  ) {
+    tag(
+      id: $id
+      name: $name
+      slug: $slug
+      description: $description
+      tagType: $tagType
+      startDate: $startDate
+      endDate: $endDate
+    ) {
+      tag {
+        id
+        slug
+        tagType
+        name
+        description
+        startDate
+        endDate
+      }
+    }
+  }
+`;

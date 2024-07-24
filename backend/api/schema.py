@@ -7,6 +7,7 @@ from api.types import (
     MessageQuery,
     NicknameQuery,
     TagQuery,
+    TagMutation,
 )
 
 
@@ -21,4 +22,8 @@ class Query(
 ): ...
 
 
-schema = graphene.Schema(query=Query)
+class Mutation(graphene.ObjectType):
+    tag = TagMutation.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

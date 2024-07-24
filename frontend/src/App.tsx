@@ -8,13 +8,16 @@ import { ErrorView } from "@views/ErrorView";
 import { HomeView } from "@views/HomeView";
 import { NotFoundView } from "@views/NotFoundView";
 import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { ToastContainer } from "react-toastify";
 
 import "react-loading-skeleton/dist/skeleton.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const TagsView = lazy(() => import("@views/TagsView/TagsView"));
 const ChannelsView = lazy(() => import("@views/ChannelsView/ChannelsView"));
 const ChannelView = lazy(() => import("@views/ChannelView/ChannelView"));
 const AdminTagsView = lazy(() => import("@views/AdminTagsView/AdminTagsView"));
+const AdminTagView = lazy(() => import("@views/AdminTagView/AdminTagView"));
 
 function Root(): React.JSX.Element {
   return (
@@ -26,6 +29,7 @@ function Root(): React.JSX.Element {
           </AuthRequired>
         </MeProvider>
       </ClientProvider>
+      <ToastContainer theme="dark" />
     </>
   );
 }
@@ -68,6 +72,10 @@ const router = createBrowserRouter([
           {
             path: constants.ROUTES.ADMIN_TAGS,
             element: <AdminTagsView />,
+          },
+          {
+            path: `${constants.ROUTES.ADMIN_TAG}/:tagId?`,
+            element: <AdminTagView />,
           },
         ],
       },

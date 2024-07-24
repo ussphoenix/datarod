@@ -231,6 +231,14 @@ SOCIAL_AUTH_PIPELINE = (
 )
 
 
+# Graphene settings
+
+GRAPHENE = {
+    "ATOMIC_MUTATIONS": True,
+    "MIDDLEWARE": ["api.middleware.ExceptionLoggingMiddleware"],
+}
+
+
 # Datarod app settings
 
 LOGOUT_URL = "https://discord.com/app"

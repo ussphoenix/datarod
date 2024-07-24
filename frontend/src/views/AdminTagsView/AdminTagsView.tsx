@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useQuery } from "@apollo/client";
-import { Breadcrumbs, NoContent, TagCard } from "@components";
+import {
+  Breadcrumbs,
+  GridLoading,
+  NoContent,
+  ReachedBottom,
+  TagCard,
+} from "@components";
 import constants from "@constants";
 import { PlusIcon, TagIcon } from "@heroicons/react/20/solid";
 import { GET_TAGS } from "@queries";
@@ -11,11 +17,35 @@ import { NavLink } from "react-router-dom";
 
 export default function AdminTagsView(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<TagType | null>("EVENT");
-  const { data, loading, error } = useQuery<RelayEdges<TagGQLType>>(GET_TAGS, {
-    variables: {
-      tagType: activeTab,
+  const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
+  const { data, loading, error, fetchMore } = useQuery<RelayEdges<TagGQLType>>(
+    GET_TAGS,
+    {
+      variables: {
+        tagType: activeTab,
+      },
     },
-  });
+  );
+
+  /**
+   * Bind scroll events to fetch more data when the user reaches the bottom
+   */
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrolledTo = window.scrollY + window.innerHeight;
+      const threshold = 300;
+      if (document.body.scrollHeight - threshold <= scrolledTo) {
+        if (data?.tags?.pageInfo?.hasNextPage && !error && !loading) {
+          fetchMore({
+            variables: { after: data?.tags?.pageInfo?.endCursor },
+          });
+          setHasFetchedMore(true);
+        }
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [data]);
 
   return (
     <>
@@ -97,7 +127,17 @@ export default function AdminTagsView(): React.JSX.Element {
         ))}
       </div>
 
+      {loading && (
+        <div className={clsx(data && "pt-5")}>
+          <GridLoading />
+        </div>
+      )}
+
       {!loading && !error && !data?.tags?.edges?.length && <NoContent />}
+
+      {!loading && !data?.tags?.pageInfo?.hasNextPage && hasFetchedMore && (
+        <ReachedBottom />
+      )}
     </>
   );
 }

@@ -1,13 +1,15 @@
 from typing import Optional
 
 import graphene
-from graphene import ObjectType, relay
+from graphene import ObjectType, relay, Mutation
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
 
 from django.urls import reverse
+from graphql_relay import from_global_id
 
-from api.utils import login_required
+
+from api.utils import login_required, staff_required
 from archive.models import Author, Channel, Message, Nickname, Tag
 
 
@@ -38,8 +40,57 @@ class TagQuery(ObjectType):
     tags = DjangoFilterConnectionField(TagType)
 
     @login_required
-    def resolve_tags(root, info):
+    def resolve_tags(root, info, **kwargs):
         return Tag.objects.all()
+
+
+class TagMutation(Mutation):
+    class Input:
+        id = graphene.ID()
+        name = graphene.String(required=True)
+        tag_type = graphene.String(
+            required=True
+        )  # This really should be a choices-derived ENUM...
+        slug = graphene.String(required=True)
+        description = graphene.String()
+        start_date = graphene.String()
+        end_date = graphene.String()
+
+    # Mutation response object
+    tag = graphene.Field(TagType)
+
+    @login_required
+    @staff_required
+    def mutate(
+        root,
+        info,
+        name,
+        tag_type,
+        slug,
+        id=None,
+        description=None,
+        start_date=None,
+        end_date=None,
+    ):
+        update_fields = {
+            "name": name,
+            "tag_type": tag_type,
+            "slug": slug,
+            "description": description,
+            "start_date": start_date,
+            "end_date": end_date,
+        }
+
+        # Update existing tag
+        if id:
+            tag = Tag.objects.get(pk=from_global_id(id).id)
+            for key, value in update_fields.items():
+                setattr(tag, key, value)
+        else:
+            tag = Tag(**update_fields)
+
+        tag.save()
+        return TagMutation(tag=tag)
 
 
 class ChannelType(DjangoObjectType):
@@ -63,7 +114,7 @@ class ChannelQuery(ObjectType):
     channels = DjangoFilterConnectionField(ChannelType)
 
     @login_required
-    def resolve_channels(root, info):
+    def resolve_channels(root, info, **kwargs):
         return Channel.objects.all()
 
 
@@ -83,7 +134,7 @@ class AuthorQuery(ObjectType):
     authors = DjangoFilterConnectionField(AuthorType)
 
     @login_required
-    def resolve_authors(root, info):
+    def resolve_authors(root, info, **kwargs):
         return Author.objects.all()
 
 
@@ -109,7 +160,7 @@ class NicknameQuery(ObjectType):
     nicknames = DjangoFilterConnectionField(NicknameType)
 
     @login_required
-    def resolve_authors(root, info):
+    def resolve_authors(root, info, **kwargs):
         return Nickname.objects.all()
 
 
@@ -142,7 +193,7 @@ class MessageQuery(ObjectType):
     messages = DjangoFilterConnectionField(MessageType)
 
     @login_required
-    def resolve_authors(root, info):
+    def resolve_authors(root, info, **kwargs):
         return Message.objects.all()
 
 
@@ -180,7 +231,7 @@ class MeType(ObjectType):
 class MeQuery(ObjectType):
     me = graphene.Field(MeType)
 
-    def resolve_me(root, info):
+    def resolve_me(root, info, **kwargs):
         """`Me` is constructed from info.context.user, so there
         is nothing we need to resolve here
         """
