@@ -28,7 +28,7 @@
     "importOrderSortSpecifiers": true
   },
   "dependencies": {
-    "@apollo/client": "^3.10.8",
+    "@apollo/client": "^3.11.1",
     "@headlessui/react": "^2.1.2",
     "@heroicons/react": "^2.1.5",
     "axios": "^1.7.2",
@@ -47,8 +47,8 @@
     "@trivago/prettier-plugin-sort-imports": "^4.3.0",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "@typescript-eslint/eslint-plugin": "^7.16.1",
-    "@typescript-eslint/parser": "^7.16.1",
+    "@typescript-eslint/eslint-plugin": "^7.17.0",
+    "@typescript-eslint/parser": "^7.17.0",
     "@vitejs/plugin-react": "^4.3.1",
     "autoprefixer": "^10.4.19",
     "eslint": "^8.57.0",
@@ -61,7 +61,7 @@
     "postcss": "^8.4.39",
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.5",
-    "typescript": "^5.5.3",
+    "typescript": "^5.5.4",
     "vite": "^5.3.4",
     "vite-tsconfig-paths": "^4.3.2"
   }
