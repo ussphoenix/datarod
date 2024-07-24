@@ -31,7 +31,15 @@ function ClientProvider(props: React.PropsWithChildren): React.ReactNode {
         Query: {
           fields: {
             tags: {
-              keyArgs: ["id", "tagType"],
+              keyArgs: ["id"],
+              ...relayStylePagination(),
+            },
+            channels: {
+              keyArgs: ["id"],
+              ...relayStylePagination(),
+            },
+            messages: {
+              keyArgs: ["id"],
               ...relayStylePagination(),
             },
           },

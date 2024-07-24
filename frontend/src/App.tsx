@@ -13,6 +13,7 @@ import "react-loading-skeleton/dist/skeleton.css";
 
 const TagsView = lazy(() => import("@views/TagsView/TagsView"));
 const ChannelsView = lazy(() => import("@views/ChannelsView/ChannelsView"));
+const ChannelView = lazy(() => import("@views/ChannelView/ChannelView"));
 
 function Root(): React.ReactNode {
   return (
@@ -48,8 +49,12 @@ const router = createBrowserRouter([
         element: <TagsView tagType="QUARTERS" />,
       },
       {
-        path: constants.ROUTES.CHANNELS,
+        path: `${constants.ROUTES.CHANNELS}/:tagId?`,
         element: <ChannelsView />,
+      },
+      {
+        path: `${constants.ROUTES.CHANNEL}/:channelId`,
+        element: <ChannelView />,
       },
     ],
   },

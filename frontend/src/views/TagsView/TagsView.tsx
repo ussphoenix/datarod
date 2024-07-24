@@ -1,7 +1,13 @@
 import { useEffect, useState } from "react";
 
 import { useQuery } from "@apollo/client";
-import { Breadcrumbs, GridLoading, ReachedBottom } from "@components";
+import {
+  Breadcrumbs,
+  GridLoading,
+  NoContent,
+  ReachedBottom,
+  ScrollToTop,
+} from "@components";
 import constants from "@constants";
 import { GET_TAGS } from "@queries";
 import type { RelayEdges, TagGQLType, TagType } from "@types";
@@ -20,11 +26,14 @@ export default function TagsView(props: TagsViewProps): React.ReactNode {
     GET_TAGS,
     {
       fetchPolicy: "network-only", // can't cache tag results because of inability to differentiate between tag types
-      variables: { tagType: tagType, first: 21 },
+      variables: { tagType: tagType },
     },
   );
   const tagDetails = getTagInfoForType(tagType);
 
+  /**
+   * Bind scroll events to fetch more data when the user reaches the bottom
+   */
   useEffect(() => {
     const handleScroll = () => {
       const scrolledTo = window.scrollY + window.innerHeight;
@@ -44,6 +53,8 @@ export default function TagsView(props: TagsViewProps): React.ReactNode {
 
   return (
     <>
+      <ScrollToTop />
+
       <Breadcrumbs
         breadcrumbs={[
           {
@@ -67,8 +78,8 @@ export default function TagsView(props: TagsViewProps): React.ReactNode {
               </div>
               <div className="mt-auto">
                 <NavLink
-                  to={`${constants.ROUTES.CHANNELS}?type=${tagDetails?.slug}&tag=${edge?.node?.slug}`}
-                  className="inline-block rounded-md bg-lcarsAqua p-2 hover:bg-lcarsBlue-400"
+                  to={`${constants.ROUTES.CHANNELS}/${edge?.node?.id}`}
+                  className="inline-block rounded-md bg-lcarsAqua p-2 hover:bg-lcarsPink-100"
                 >
                   Browse Channels
                 </NavLink>
@@ -82,6 +93,8 @@ export default function TagsView(props: TagsViewProps): React.ReactNode {
           <GridLoading />
         </div>
       )}
+
+      {!loading && !error && !data?.tags?.edges?.length && <NoContent />}
 
       {!loading && !data?.tags?.pageInfo?.hasNextPage && hasFetchedMore && (
         <ReachedBottom />

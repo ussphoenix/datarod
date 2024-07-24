@@ -11,7 +11,6 @@ export interface TagInfo {
       titleId?: string | undefined;
     } & React.RefAttributes<SVGSVGElement>
   >;
-  slug: string;
 }
 
 const tagInfo: {
@@ -21,16 +20,19 @@ const tagInfo: {
     name: "Events",
     rootPath: constants.ROUTES.EVENTS,
     icon: CalendarIcon,
-    slug: "events",
   },
   QUARTERS: {
     name: "Crew Quarters",
     rootPath: constants.ROUTES.QUARTERS,
     icon: UsersIcon,
-    slug: "quarters",
   },
 };
 
-export const getTagInfoForType = (tagType: TagType): TagInfo | null => {
+export const getTagInfoForType = (
+  tagType: TagType | undefined,
+): TagInfo | null => {
+  if (!tagType) {
+    return null;
+  }
   return tagInfo[tagType] || null;
 };

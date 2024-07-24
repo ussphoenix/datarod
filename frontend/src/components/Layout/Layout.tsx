@@ -74,7 +74,7 @@ export default function Layout(props: LayoutProps) {
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                 <div className="flex h-16 shrink-0 items-center">
                   <NavLink
-                    className="font-title text-3xl tracking-wide text-white"
+                    className="font-title text-lg tracking-wide text-white"
                     to={constants.ROUTES.HOME}
                   >
                     Phoenix Archive
@@ -145,7 +145,7 @@ export default function Layout(props: LayoutProps) {
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-900 px-6 py-4">
             <div className="flex h-16 shrink-0 items-center">
               <NavLink
-                className="font-title text-4xl tracking-wide text-white"
+                className="font-title text-2xl tracking-wide text-white"
                 to={constants.ROUTES.HOME}
               >
                 Phoenix Archive
@@ -233,7 +233,7 @@ export default function Layout(props: LayoutProps) {
             <Bars3Icon aria-hidden="true" className="h-6 w-6" />
           </button>
           <NavLink
-            className="font-title text-3xl tracking-wide text-white"
+            className="font-title text-lg tracking-wide text-white"
             to={constants.ROUTES.HOME}
           >
             Phoenix Archive

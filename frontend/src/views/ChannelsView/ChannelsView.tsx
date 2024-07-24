@@ -1,86 +1,84 @@
 import { useEffect, useState } from "react";
 
 import { useQuery } from "@apollo/client";
-import { type Breadcrumb, Breadcrumbs } from "@components";
-import { GridLoading, ReachedBottom } from "@components";
-import constants from "@constants";
 import {
-  CalendarIcon,
-  HashtagIcon,
-  UsersIcon,
-} from "@heroicons/react/20/solid";
-import { GET_CHANNELS, GET_TAGS } from "@queries";
-import type { ChannelGQLType, RelayEdges, TagGQLType, TagType } from "@types";
+  type Breadcrumb,
+  Breadcrumbs,
+  GridLoading,
+  NoContent,
+  ReachedBottom,
+  ScrollToTop,
+} from "@components";
+import constants from "@constants";
+import { HashtagIcon } from "@heroicons/react/20/solid";
+import { GET_CHANNELS, GET_TAG } from "@queries";
+import type {
+  ChannelGQLType,
+  RelayEdges,
+  RelaySingle,
+  TagGQLType,
+} from "@types";
+import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
-import Skeleton from "react-loading-skeleton";
 import { NavLink } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
-
-const tagTypeSlugMap: { [slug: string]: TagType } = {
-  events: "EVENT",
-  quarters: "QUARTERS",
-  other: "OTHER",
-};
+import { useParams } from "react-router-dom";
 
 export default function ChannelsView(): React.ReactNode {
-  const [params] = useSearchParams();
   const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
-  const tagTypeParam = params.get("type");
-  const tagParam = params.get("tag");
-  const tagType = tagTypeSlugMap[tagTypeParam || ""] || null;
-  const { data: tagData } = useQuery<RelayEdges<TagGQLType>>(GET_TAGS, {
-    variables: { slug: tagParam },
+  const { tagId } = useParams();
+
+  const { data: tagData, loading: tagLoading } = useQuery<
+    RelaySingle<TagGQLType>
+  >(GET_TAG, {
+    variables: { id: tagId },
     fetchPolicy: "network-only",
+    skip: !tagId,
   });
-  const { data, loading, fetchMore, error } = useQuery<
-    RelayEdges<ChannelGQLType>
-  >(GET_CHANNELS, {
+
+  const {
+    data,
+    loading: channelLoading,
+    fetchMore,
+    error,
+  } = useQuery<RelayEdges<ChannelGQLType>>(GET_CHANNELS, {
     variables: {
-      tagType,
-      tagSlug: tagParam,
+      tag: tagId,
     },
   });
 
+  // Condense loading states
+  const loading: boolean = tagLoading && channelLoading;
+
+  // Generate breadcrumb trail based on tag type
   const breadcrumbs: Breadcrumb[] = [
-    ...(tagType === "EVENT"
-      ? [{ name: "Events", link: constants.ROUTES.EVENTS, icon: CalendarIcon }]
-      : []),
-    ...(tagType === "QUARTERS"
+    {
+      name: getTagInfoForType(tagData?.tag?.tagType)?.name || "All Channels",
+      link:
+        getTagInfoForType(tagData?.tag?.tagType)?.rootPath ||
+        constants.ROUTES.CHANNELS,
+      icon: getTagInfoForType(tagData?.tag?.tagType)?.icon || HashtagIcon,
+    },
+    ...(tagData?.tag?.tagType
       ? [
           {
-            name: "Crew Quarters",
-            link: constants.ROUTES.QUARTERS,
-            icon: UsersIcon,
-          },
-        ]
-      : []),
-    ...(tagType
-      ? []
-      : [
-          {
-            name: "All Channels",
-            link: constants.ROUTES.CHANNELS,
-            icon: HashtagIcon,
-          },
-        ]),
-    ...(tagType
-      ? [
-          {
-            name: tagData?.tags?.edges[0]?.node?.name || <Skeleton />,
+            name: tagData?.tag?.name,
             link: location.pathname + location.search,
           },
         ]
       : []),
   ];
 
+  /**
+   * Bind scroll events to fetch more data when the user reaches the bottom
+   */
   useEffect(() => {
     const handleScroll = () => {
       const scrolledTo = window.scrollY + window.innerHeight;
       const threshold = 300;
       if (document.body.scrollHeight - threshold <= scrolledTo) {
-        if (data?.tags?.pageInfo?.hasNextPage && !error && !loading) {
+        if (data?.channels?.pageInfo?.hasNextPage && !error && !loading) {
           fetchMore({
-            variables: { after: data?.tags?.pageInfo?.endCursor },
+            variables: { after: data?.channels?.pageInfo?.endCursor },
           });
           setHasFetchedMore(true);
         }
@@ -92,7 +90,13 @@ export default function ChannelsView(): React.ReactNode {
 
   return (
     <>
-      <Breadcrumbs breadcrumbs={breadcrumbs} />
+      <ScrollToTop />
+
+      {loading ? (
+        <Breadcrumbs loading />
+      ) : (
+        <Breadcrumbs breadcrumbs={breadcrumbs} />
+      )}
 
       <div className="grid-col-1 grid gap-5 md:grid-cols-3">
         {data &&
@@ -107,8 +111,8 @@ export default function ChannelsView(): React.ReactNode {
               </div>
               <div className="mt-auto">
                 <NavLink
-                  to="#"
-                  className="inline-block rounded-md bg-lcarsYellow-100 p-2 text-black hover:bg-lcarsOrange-100"
+                  to={`${constants.ROUTES.CHANNEL}/${edge?.node?.id}`}
+                  className="inline-block rounded-md bg-lcarsPurple-500 p-2 hover:bg-lcarsOrange-100"
                 >
                   Read Channel
                 </NavLink>
@@ -123,7 +127,9 @@ export default function ChannelsView(): React.ReactNode {
         </div>
       )}
 
-      {!loading && !data?.tags?.pageInfo?.hasNextPage && hasFetchedMore && (
+      {!loading && !error && !data?.channels?.edges?.length && <NoContent />}
+
+      {!loading && !data?.channels?.pageInfo?.hasNextPage && hasFetchedMore && (
         <ReachedBottom />
       )}
     </>

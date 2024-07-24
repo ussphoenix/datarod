@@ -69,6 +69,10 @@ class Nickname(models.Model):
     def __str__(self):
         return f"{self.name} <{self.author.name}>"
 
+    @property
+    def discord_id(self) -> str:
+        return self.author.discord_id or None
+
     @classmethod
     def current_nickname(cls, author: Author) -> "Nickname":
         """Return the "current" Nickname (start date, but no end date)"""

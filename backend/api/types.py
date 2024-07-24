@@ -49,6 +49,7 @@ class ChannelType(DjangoObjectType):
         filter_fields = {
             "discord_id": ["exact"],
             "name": ["exact", "icontains", "istartswith"],
+            "tag": ["exact"],
             "tag__name": ["exact", "icontains", "istartswith"],
             "tag__slug": ["exact"],
             "tag__tag_type": ["exact"],
@@ -87,9 +88,11 @@ class AuthorQuery(ObjectType):
 
 
 class NicknameType(DjangoObjectType):
+    discord_id = graphene.String()
+
     class Meta:
         model = Nickname
-        fields = ("author", "name", "start_date", "end_date", "avatar")
+        fields = ("author", "discord_id", "name", "start_date", "end_date", "avatar")
         filter_fields = {
             "author": ["exact"],
             "author__discord_id": ["exact"],

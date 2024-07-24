@@ -8,9 +8,10 @@
     font-family: "FinalFrontierOldStyle";
     font-style: normal;
     font-weight: normal;
+    size-adjust: 140%;
     font-display: swap;
     src:
-      url("static/fonts/finalfrontieroldstyle.woff2") format("woff2"),
-      url("static/fonts/finalfrontieroldstyle.woff") format("woff");
+      url("/static/fonts/finalfrontieroldstyle.woff2") format("woff2"),
+      url("/static/fonts/finalfrontieroldstyle.woff") format("woff");
   }
 }

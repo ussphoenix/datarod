@@ -5,5 +5,6 @@ export default {
     EVENTS: "/events",
     QUARTERS: "/quarters",
     CHANNELS: "/channels",
+    CHANNEL: "/channel",
   },
 };
