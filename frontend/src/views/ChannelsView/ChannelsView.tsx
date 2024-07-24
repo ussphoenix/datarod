@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 import {
   type Breadcrumb,
   Breadcrumbs,
+  ChannelCard,
   GridLoading,
   NoContent,
   ReachedBottom,
@@ -23,7 +24,7 @@ import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
-export default function ChannelsView(): React.ReactNode {
+export default function ChannelsView(): React.JSX.Element {
   const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { tagId } = useParams();
 
@@ -100,24 +101,8 @@ export default function ChannelsView(): React.ReactNode {
 
       <div className="grid-col-1 grid gap-5 md:grid-cols-3">
         {data &&
-          data?.channels?.edges?.map((edge) => (
-            <div
-              key={edge?.node?.id}
-              className="flex flex-col space-y-2 rounded-md bg-gray-900 p-4"
-            >
-              <div className="flex-1">
-                <h1 className="text-lg font-semibold">#{edge?.node?.name}</h1>
-                <p className="pb-6 text-gray-300">{edge?.node?.topic}</p>
-              </div>
-              <div className="mt-auto">
-                <NavLink
-                  to={`${constants.ROUTES.CHANNEL}/${edge?.node?.id}`}
-                  className="inline-block rounded-md bg-lcarsPurple-500 p-2 hover:bg-lcarsOrange-100"
-                >
-                  Read Channel
-                </NavLink>
-              </div>
-            </div>
+          data?.channels?.edges?.map(({ node: channel }) => (
+            <ChannelCard channel={channel} key={channel?.id} />
           ))}
       </div>
 

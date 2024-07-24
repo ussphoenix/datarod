@@ -1,21 +1,22 @@
 import { lazy } from "react";
 
-import { AuthRequired, Layout } from "@components";
+import { AuthRequired, Layout, StaffRequired } from "@components";
 import constants from "@constants";
 import { ClientProvider } from "@providers/ClientProvider";
 import { MeProvider } from "@providers/MeProvider";
 import { ErrorView } from "@views/ErrorView";
 import { HomeView } from "@views/HomeView";
 import { NotFoundView } from "@views/NotFoundView";
-import { RouterProvider, createBrowserRouter } from "react-router-dom";
+import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
 
 import "react-loading-skeleton/dist/skeleton.css";
 
 const TagsView = lazy(() => import("@views/TagsView/TagsView"));
 const ChannelsView = lazy(() => import("@views/ChannelsView/ChannelsView"));
 const ChannelView = lazy(() => import("@views/ChannelView/ChannelView"));
+const AdminTagsView = lazy(() => import("@views/AdminTagsView/AdminTagsView"));
 
-function Root(): React.ReactNode {
+function Root(): React.JSX.Element {
   return (
     <>
       <ClientProvider>
@@ -55,6 +56,20 @@ const router = createBrowserRouter([
       {
         path: `${constants.ROUTES.CHANNEL}/:channelId`,
         element: <ChannelView />,
+      },
+      {
+        path: "admin",
+        element: (
+          <StaffRequired>
+            <Outlet />
+          </StaffRequired>
+        ),
+        children: [
+          {
+            path: constants.ROUTES.ADMIN_TAGS,
+            element: <AdminTagsView />,
+          },
+        ],
       },
     ],
   },

@@ -4,16 +4,14 @@ import constants from "@constants";
 import {
   Dialog,
   DialogBackdrop,
-  DialogPanel, // Menu,
-  // MenuButton,
-  // MenuItem,
-  // MenuItems,
+  DialogPanel,
   TransitionChild,
 } from "@headlessui/react";
-import { HashtagIcon } from "@heroicons/react/20/solid";
 import {
   Bars3Icon,
   CalendarIcon,
+  HashtagIcon,
+  TagIcon,
   UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
@@ -105,34 +103,40 @@ export default function Layout(props: LayoutProps) {
                             </NavLink>
                           </li>
                         ))}
+                        {me?.isStaff && (
+                          <li>
+                            <NavLink
+                              to={constants.ROUTES.ADMIN_TAGS}
+                              className={({ isActive }) =>
+                                clsx(
+                                  isActive
+                                    ? "bg-lcarsPurple-500 text-white"
+                                    : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
+                                  "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
+                                )
+                              }
+                            >
+                              <TagIcon
+                                className="size-6 shrink-0"
+                                aria-hidden
+                              />
+                              Tag Management
+                            </NavLink>
+                          </li>
+                        )}
                       </ul>
                     </li>
-                    {/* <li className="mt-auto">
-                      <Menu as="div">
-                        <MenuButton className="group flex w-full items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-lcarsRed hover:text-white">
-                          <img
-                            alt=""
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                            className="h-8 w-8 rounded-full bg-gray-800"
-                          />
-                          <span aria-hidden="true">User Name</span>
-                        </MenuButton>
-                        <MenuItems
-                          transition
-                          anchor="top start"
-                          className="z-40 rounded-md bg-lcarsPurple-200 px-6 py-2 text-white"
+
+                    {me?.logoutUrl && me?.isAuthenticated && (
+                      <li className="mt-auto">
+                        <NavLink
+                          to={me?.logoutUrl}
+                          className="rounded-md bg-lcarsBlue-600 px-4 py-2 text-sm hover:bg-lcarsPurple-100"
                         >
-                          <MenuItem>
-                            <a
-                              className="block hover:text-gray-900"
-                              href="/settings"
-                            >
-                              Log Out
-                            </a>
-                          </MenuItem>
-                        </MenuItems>
-                      </Menu>
-                    </li> */}
+                          Logout
+                        </NavLink>
+                      </li>
+                    )}
                   </ul>
                 </nav>
               </div>
@@ -143,7 +147,7 @@ export default function Layout(props: LayoutProps) {
         {/* Static sidebar menu */}
         <div className="hidden lg:fixed lg:inset-y-0 lg:z-30 lg:flex lg:w-72 lg:flex-col">
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-slate-900 px-6 py-4">
-            <div className="flex h-16 shrink-0 items-center">
+            <div className="flex h-16 shrink-0 items-center justify-center">
               <NavLink
                 className="font-title text-2xl tracking-wide text-white"
                 to={constants.ROUTES.HOME}
@@ -179,6 +183,37 @@ export default function Layout(props: LayoutProps) {
                   </ul>
                 </li>
 
+                <li>
+                  <ul>
+                    <li>Recent Channels</li>
+                    <li className="text-gray-500">Coming Soon</li>
+                  </ul>
+                </li>
+
+                {me?.isStaff && (
+                  <li>
+                    <ul>
+                      <li>Admin</li>
+                      <li>
+                        <NavLink
+                          to={constants.ROUTES.ADMIN_TAGS}
+                          className={({ isActive }) =>
+                            clsx(
+                              isActive
+                                ? "bg-lcarsPurple-500 text-white"
+                                : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
+                            )
+                          }
+                        >
+                          <TagIcon className="size-6 shrink-0" aria-hidden />
+                          Tag Management
+                        </NavLink>
+                      </li>
+                    </ul>
+                  </li>
+                )}
+
                 {me?.logoutUrl && me?.isAuthenticated && (
                   <li className="mt-auto">
                     <NavLink
@@ -189,34 +224,6 @@ export default function Layout(props: LayoutProps) {
                     </NavLink>
                   </li>
                 )}
-
-                {/* User account menu */}
-                {/* <li className="mt-auto">
-                  <Menu as="div">
-                    <MenuButton className="group flex w-full items-center gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-gray-400 hover:bg-lcarsRed hover:text-white">
-                      <img
-                        alt=""
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                        className="h-8 w-8 rounded-full bg-gray-800"
-                      />
-                      <span aria-hidden="true">User Name</span>
-                    </MenuButton>
-                    <MenuItems
-                      transition
-                      anchor="top start"
-                      className="z-40 rounded-md bg-lcarsPurple-200 px-6 py-2 text-white"
-                    >
-                      <MenuItem>
-                        <a
-                          className="block hover:text-gray-900"
-                          href="/settings"
-                        >
-                          Log Out
-                        </a>
-                      </MenuItem>
-                    </MenuItems>
-                  </Menu>
-                </li> */}
               </ul>
             </nav>
           </div>

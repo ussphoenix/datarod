@@ -17,7 +17,7 @@ export const MeContext = createContext<MeContextInterface>({
   meError: false,
 });
 
-export function MeProvider(props: React.PropsWithChildren): React.ReactNode {
+export function MeProvider(props: React.PropsWithChildren): React.JSX.Element {
   const { children } = props;
   const [me, setMe] = useState<MeGQLType | null>(null);
   const { loading, error } = useQuery<{ me: MeGQLType }>(GET_ME, {

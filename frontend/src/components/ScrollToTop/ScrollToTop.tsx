@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { ArrowUpIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 
-export default function ScrollToTop(): React.ReactNode {
+export default function ScrollToTop(): React.JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
 
   const toggleVisible = () => {

@@ -7,19 +7,18 @@ import {
   NoContent,
   ReachedBottom,
   ScrollToTop,
+  TagCard,
 } from "@components";
-import constants from "@constants";
 import { GET_TAGS } from "@queries";
 import type { RelayEdges, TagGQLType, TagType } from "@types";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
-import { NavLink } from "react-router-dom";
 
 interface TagsViewProps {
   tagType: TagType;
 }
 
-export default function TagsView(props: TagsViewProps): React.ReactNode {
+export default function TagsView(props: TagsViewProps): React.JSX.Element {
   const { tagType } = props;
   const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { loading, data, fetchMore, error } = useQuery<RelayEdges<TagGQLType>>(
@@ -67,24 +66,8 @@ export default function TagsView(props: TagsViewProps): React.ReactNode {
 
       <div className="grid-col-1 grid gap-5 md:grid-cols-3">
         {data &&
-          data?.tags?.edges?.map((edge) => (
-            <div
-              key={edge?.node?.id}
-              className="flex flex-col space-y-2 rounded-md bg-gray-900 p-4"
-            >
-              <div className="flex-1">
-                <h1 className="text-lg font-semibold">{edge?.node?.name}</h1>
-                <p className="pb-6 text-gray-300">{edge?.node?.description}</p>
-              </div>
-              <div className="mt-auto">
-                <NavLink
-                  to={`${constants.ROUTES.CHANNELS}/${edge?.node?.id}`}
-                  className="inline-block rounded-md bg-lcarsAqua p-2 hover:bg-lcarsPink-100"
-                >
-                  Browse Channels
-                </NavLink>
-              </div>
-            </div>
+          data?.tags?.edges?.map(({ node: tag }) => (
+            <TagCard tag={tag} key={tag?.id} />
           ))}
       </div>
 
