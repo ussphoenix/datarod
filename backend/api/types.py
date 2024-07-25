@@ -53,8 +53,8 @@ class TagMutation(Mutation):
         )  # This really should be a choices-derived ENUM...
         slug = graphene.String(required=True)
         description = graphene.String()
-        start_date = graphene.String()
-        end_date = graphene.String()
+        start_date = graphene.Date()
+        end_date = graphene.Date()
 
     # Mutation response object
     tag = graphene.Field(TagType)

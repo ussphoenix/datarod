@@ -46,12 +46,8 @@ const router = createBrowserRouter([
     children: [
       { path: constants.ROUTES.HOME, element: <HomeView /> },
       {
-        path: constants.ROUTES.EVENTS,
-        element: <TagsView tagType="EVENT" />,
-      },
-      {
-        path: constants.ROUTES.QUARTERS,
-        element: <TagsView tagType="QUARTERS" />,
+        path: `${constants.ROUTES.TAGS}/:tagType?`,
+        element: <TagsView />,
       },
       {
         path: `${constants.ROUTES.CHANNELS}/:tagId?`,

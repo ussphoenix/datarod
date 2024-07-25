@@ -105,7 +105,7 @@ export default function ChannelView(): React.JSX.Element {
             key={edge?.node?.timestamp}
             className="flex w-full space-x-3 border-b border-b-gray-900 py-5"
           >
-            <div>
+            <div className="shrink-0">
               <img
                 className="h-10 w-10 rounded-full"
                 alt=""

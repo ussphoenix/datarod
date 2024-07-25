@@ -17,6 +17,7 @@ graphene-django = "^3.2.2"
 django-filter = "^24.2"
 social-auth-app-django = "^5.4.2"
 django-cors-headers = "^4.4.0"
+beautifulsoup4 = "^4.12.3"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"

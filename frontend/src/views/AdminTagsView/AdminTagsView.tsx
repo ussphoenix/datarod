@@ -12,11 +12,12 @@ import constants from "@constants";
 import { PlusIcon, TagIcon } from "@heroicons/react/20/solid";
 import { GET_TAGS } from "@queries";
 import type { RelayEdges, TagGQLType, TagType } from "@types";
+import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 
 export default function AdminTagsView(): React.JSX.Element {
-  const [activeTab, setActiveTab] = useState<TagType | null>("EVENT");
+  const [activeTab, setActiveTab] = useState<TagType | null>("EVENTS");
   const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { data, loading, error, fetchMore } = useQuery<RelayEdges<TagGQLType>>(
     GET_TAGS,
@@ -57,44 +58,20 @@ export default function AdminTagsView(): React.JSX.Element {
 
       <div className="flex flex-wrap items-center justify-center pb-5">
         <div className="space-x-2">
-          <button
-            type="button"
-            className={clsx(
-              "rounded-2xl border px-2",
-              activeTab === ("EVENT" as TagType)
-                ? "border-transparent bg-lcarsYellow-300 text-gray-900"
-                : "border-lcarsYellow-300 px-2 text-white hover:border-transparent hover:bg-lcarsPurple-100 hover:text-gray-900",
-            )}
-            onClick={() => setActiveTab("EVENT")}
-          >
-            Events
-          </button>
-
-          <button
-            type="button"
-            className={clsx(
-              "rounded-2xl border px-2",
-              activeTab === ("QUARTERS" as TagType)
-                ? "border-transparent bg-lcarsYellow-300 text-gray-900"
-                : "border-lcarsYellow-300 px-2 text-white hover:border-transparent hover:bg-lcarsPurple-100 hover:text-gray-900",
-            )}
-            onClick={() => setActiveTab("QUARTERS")}
-          >
-            Crew Quarters
-          </button>
-
-          <button
-            type="button"
-            className={clsx(
-              "rounded-2xl border px-2",
-              activeTab === ("OTHER" as TagType)
-                ? "border-transparent bg-lcarsYellow-300 text-gray-900"
-                : "border-lcarsYellow-300 px-2 text-white hover:border-transparent hover:bg-lcarsPurple-100 hover:text-gray-900",
-            )}
-            onClick={() => setActiveTab("OTHER")}
-          >
-            Other
-          </button>
+          {Object.keys(constants.TAG_INFO).map((key) => (
+            <button
+              type="button"
+              className={clsx(
+                "rounded-2xl border px-2",
+                activeTab === key
+                  ? "border-transparent bg-lcarsYellow-300 text-gray-900"
+                  : "border-lcarsYellow-300 px-2 text-white hover:border-transparent hover:bg-lcarsPurple-100 hover:text-gray-900",
+              )}
+              onClick={() => setActiveTab(key as TagType)}
+            >
+              {getTagInfoForType(key)?.name}
+            </button>
+          ))}
 
           <button
             type="button"

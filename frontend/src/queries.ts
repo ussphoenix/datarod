@@ -135,8 +135,8 @@ export const MUTATE_TAG = gql`
     $slug: String!
     $description: String
     $tagType: String!
-    $startDate: String
-    $endDate: String
+    $startDate: Date
+    $endDate: Date
   ) {
     tag(
       id: $id

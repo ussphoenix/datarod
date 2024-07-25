@@ -9,10 +9,8 @@ import {
 } from "@headlessui/react";
 import {
   Bars3Icon,
-  CalendarIcon,
   HashtagIcon,
   TagIcon,
-  UsersIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { MeContext } from "@providers/MeProvider";
@@ -25,9 +23,12 @@ interface LayoutProps {
 }
 
 const navigation = [
-  { name: "Events", href: constants.ROUTES.EVENTS, icon: CalendarIcon },
-  { name: "Crew Quarters", href: constants.ROUTES.QUARTERS, icon: UsersIcon },
-  { name: "All Channels", href: constants.ROUTES.CHANNELS, icon: HashtagIcon },
+  ...Object.values(constants.TAG_INFO),
+  {
+    name: "All Channels",
+    rootPath: constants.ROUTES.CHANNELS,
+    icon: HashtagIcon,
+  },
 ];
 
 export default function Layout(props: LayoutProps) {
@@ -85,7 +86,7 @@ export default function Layout(props: LayoutProps) {
                         {navigation.map((item) => (
                           <li key={item.name}>
                             <NavLink
-                              to={item.href}
+                              to={item.rootPath}
                               className={({ isActive }) =>
                                 clsx(
                                   isActive
@@ -162,7 +163,7 @@ export default function Layout(props: LayoutProps) {
                     {navigation.map((item) => (
                       <li key={item.name}>
                         <NavLink
-                          to={item.href}
+                          to={item.rootPath}
                           className={({ isActive }) =>
                             clsx(
                               isActive

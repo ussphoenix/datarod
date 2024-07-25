@@ -13,22 +13,19 @@ import { GET_TAGS } from "@queries";
 import type { RelayEdges, TagGQLType, TagType } from "@types";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
+import { useParams } from "react-router-dom";
 
-interface TagsViewProps {
-  tagType: TagType;
-}
-
-export default function TagsView(props: TagsViewProps): React.JSX.Element {
-  const { tagType } = props;
+export default function TagsView(): React.JSX.Element {
   const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
+  const { tagType } = useParams();
   const { loading, data, fetchMore, error } = useQuery<RelayEdges<TagGQLType>>(
     GET_TAGS,
     {
       fetchPolicy: "network-only", // can't cache tag results because of inability to differentiate between tag types
-      variables: { tagType: tagType },
+      variables: { tagType: tagType?.toUpperCase() },
     },
   );
-  const tagDetails = getTagInfoForType(tagType);
+  const tagDetails = getTagInfoForType(tagType?.toUpperCase() as TagType);
 
   /**
    * Bind scroll events to fetch more data when the user reaches the bottom

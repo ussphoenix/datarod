@@ -21,7 +21,6 @@ import type {
 } from "@types";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
-import { NavLink } from "react-router-dom";
 import { useParams } from "react-router-dom";
 
 export default function ChannelsView(): React.JSX.Element {

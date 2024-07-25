@@ -1,3 +1,5 @@
+import constants from "@constants";
+
 export interface DiscordMessage {
   id: string;
   tts?: boolean;
@@ -50,7 +52,7 @@ export interface RelaySingle<P> {
   [query: string]: P;
 }
 
-export type TagType = "EVENT" | "QUARTERS" | "OTHER";
+export type TagType = keyof typeof constants.TAG_INFO;
 
 export interface MeGQLType {
   username: string;

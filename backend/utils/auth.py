@@ -38,8 +38,6 @@ def set_guild_permissions(user, response, *args, **kwargs):
     should_be_staff = settings.DISCORD_GUILD_STAFF_ROLE_ID in response.get(
         "guild", {}
     ).get("roles")
-    print(f"should be staff? {should_be_staff}")
-    print(settings.DISCORD_GUILD_STAFF_ROLE_ID, response.get("guild", {}).get("roles"))
 
     if user.is_staff and not should_be_staff:
         user.is_staff = False

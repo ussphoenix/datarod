@@ -9,38 +9,49 @@ class Tag(models.Model):
     """Categorization for Channels, such as server events"""
 
     class TagType(models.TextChoices):
-        EVENT = "event", "Event"
+        EVENTS = "events", "Events"
         QUARTERS = "quarters", "Crew Quarters"
+        PHOENIXB = "phoenixb", "Phoenix B"
         OTHER = "other", "Other"
 
     name = models.CharField(max_length=128)
     slug = models.SlugField(max_length=64, unique=True)
-    tag_type = models.CharField(max_length=64, choices=TagType, default=TagType.EVENT)
+    tag_type = models.CharField(max_length=64, choices=TagType, default=TagType.EVENTS)
     description = models.TextField(null=True, blank=True)
-    start_date = models.DateTimeField(null=True, blank=True)
-    end_date = models.DateTimeField(null=True, blank=True)
+    start_date = models.DateField(null=True, blank=True)
+    end_date = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        ordering = ["-start_date", "name"]
 
 
 class Channel(models.Model):
     """Archived channel instance"""
 
-    discord_id = models.CharField("channel id", max_length=64, unique=True)
+    discord_id = models.CharField(
+        "channel id", max_length=64, unique=True, null=True, blank=True
+    )
     name = models.CharField(max_length=100)
-    tag = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, blank=False)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, blank=False)
     topic = models.TextField(null=True, blank=True)
     archive_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"#{self.name}"
 
+    class Meta:
+        ordering = ["name"]
+
 
 class Author(models.Model):
     """Discord user account instance"""
 
-    discord_id = models.CharField("author id", max_length=64, unique=True)
+    discord_id = models.CharField(
+        "author id", max_length=64, unique=True, null=True, blank=True
+    )
     name = models.CharField("discord username", max_length=64)
 
     def __str__(self):
@@ -141,7 +152,9 @@ class Nickname(models.Model):
 class Message(models.Model):
     """Discord message instance"""
 
-    discord_id = models.CharField("message id", max_length=64, unique=True)
+    discord_id = models.CharField(
+        "message id", max_length=64, unique=True, null=True, blank=True
+    )
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     nickname = models.ForeignKey(
         Nickname, null=True, blank=True, on_delete=models.SET_NULL

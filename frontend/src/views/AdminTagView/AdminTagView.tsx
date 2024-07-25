@@ -4,6 +4,7 @@ import constants from "@constants";
 import { TagIcon } from "@heroicons/react/20/solid";
 import { GET_TAG, MUTATE_TAG } from "@queries";
 import type { RelaySingle, TagGQLType } from "@types";
+import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useParams } from "react-router-dom";
@@ -48,10 +49,12 @@ export default function AdminTagView(): React.JSX.Element {
       {!loading && (
         <Formik
           initialValues={{
-            tagType: data?.tag?.tagType || "EVENT",
+            tagType: data?.tag?.tagType || "EVENTS",
             name: data?.tag?.name || "",
             slug: data?.tag?.slug || "",
             description: data?.tag?.description || "",
+            startDate: data?.tag?.startDate || "",
+            endDate: data?.tag?.endDate || "",
           }}
           onSubmit={(values) => {
             mutateTag({
@@ -61,6 +64,8 @@ export default function AdminTagView(): React.JSX.Element {
                 name: values?.name,
                 slug: values?.slug,
                 description: values?.description,
+                startDate: values?.startDate || null,
+                endDate: values?.endDate || null,
               },
             });
           }}
@@ -71,12 +76,18 @@ export default function AdminTagView(): React.JSX.Element {
               .max(64, "Too long")
               .matches(/^[-a-zA-Z0-9_]+$/, "Must be a valid slug"),
             description: Yup.string(),
+            startDate: Yup.date().typeError(
+              "The value must be a date (YYYY-MM-DD)",
+            ),
+            endDate: Yup.date().typeError(
+              "The value must be a date (YYYY-MM-DD)",
+            ),
           })}
         >
           {({ errors }) => (
             <Form className="grid grid-cols-1 space-y-4 md:w-3/4 lg:w-1/2 lg:grid-cols-2">
               <label htmlFor="tagType" className="w-36 font-semibold">
-                Tag Type:
+                Tag Type*:
               </label>
               <div>
                 <Field
@@ -88,11 +99,14 @@ export default function AdminTagView(): React.JSX.Element {
                   name="tagType"
                   required
                 >
-                  <option value="EVENT" selected>
-                    Event
-                  </option>
-                  <option value="QUARTERS">Crew Quarters</option>
-                  <option value="OTHER">Other</option>
+                  {Object.keys(constants.TAG_INFO).map(
+                    (key) =>
+                      key && (
+                        <option value={key}>
+                          {getTagInfoForType(key)?.name}
+                        </option>
+                      ),
+                  )}
                 </Field>
                 <div className="mt-2 text-lcarsPink-100">
                   <ErrorMessage name="tagType" />
@@ -100,7 +114,7 @@ export default function AdminTagView(): React.JSX.Element {
               </div>
 
               <label htmlFor="name" className="w-36 font-semibold">
-                Tag Name:
+                Tag Name*:
               </label>
               <div>
                 <Field
@@ -117,7 +131,7 @@ export default function AdminTagView(): React.JSX.Element {
               </div>
 
               <label htmlFor="name" className="w-36 font-semibold">
-                Tag Slug:
+                Tag Slug*:
               </label>
               <div>
                 <Field
@@ -133,7 +147,9 @@ export default function AdminTagView(): React.JSX.Element {
                 </div>
                 <div className="mt-2 text-sm text-gray-300">
                   The slug will be used with the discord bot when archiving a
-                  channel. It should have no spaces in it.
+                  channel. It should have no spaces or special characters, and
+                  must be unique. Using a slug that has already been used will
+                  result in an error
                 </div>
               </div>
 
@@ -151,6 +167,44 @@ export default function AdminTagView(): React.JSX.Element {
                 />
                 <div className="mt-2 text-lcarsPink-100">
                   <ErrorMessage name="description" />
+                </div>
+              </div>
+
+              <label htmlFor="startDate" className="w-36 font-semibold">
+                Start Date:
+              </label>
+              <div>
+                <Field
+                  className={clsx(
+                    "rounded-md border border-gray-600 bg-gray-700 p-2 text-gray-300",
+                    errors?.name && "ring-1 ring-lcarsPink-100",
+                  )}
+                  name="startDate"
+                />
+                <div className="mt-2 text-lcarsPink-100">
+                  <ErrorMessage name="startDate" />
+                </div>
+                <div className="mt-2 text-sm text-gray-300">
+                  Expects the format YYYY-MM-DD
+                </div>
+              </div>
+
+              <label htmlFor="endDate" className="w-36 font-semibold">
+                End Date:
+              </label>
+              <div>
+                <Field
+                  className={clsx(
+                    "rounded-md border border-gray-600 bg-gray-700 p-2 text-gray-300",
+                    errors?.name && "ring-1 ring-lcarsPink-100",
+                  )}
+                  name="endDate"
+                />
+                <div className="mt-2 text-lcarsPink-100">
+                  <ErrorMessage name="endDate" />
+                </div>{" "}
+                <div className="mt-2 text-sm text-gray-300">
+                  Expects the format YYYY-MM-DD
                 </div>
               </div>
 
