@@ -42,19 +42,17 @@ class Command(BaseCommand):
 
         with open(file_name) as fp:
             soup = BeautifulSoup(fp, features="html.parser")
-            messages = soup.find_all("div", {"class": "chatlog__messages"})
-
+            messages = soup.find_all("div", {"class": "chatlog__message-container"})
             data_group = []
 
             for message in messages:
                 author_name = None
                 author_id = None
                 timestamp = None
-                message_id = None
+                message_id = message.attrs.get("data-message-id")
                 content = None
-                if authors := message.find_all(
-                    "span", {"class": "chatlog__author-name"}
-                ):
+
+                if authors := message.find_all("span", {"class": "chatlog__author"}):
                     author = authors[0]
                     author_name = author.get_text()
                     author_id = author.attrs.get("data-user-id")
@@ -63,16 +61,16 @@ class Command(BaseCommand):
                 ):
                     timestamp = make_aware(
                         datetime.datetime.strptime(
-                            timestamps[0].get_text(), "%d-%b-%y %I:%M %p"
+                            timestamps[0].get_text(), "%m/%d/%Y %I:%M %p"
                         )
                     )
 
                 if message_body := message.find_all(
-                    "div", {"class": "chatlog__message"}
+                    "div", {"class": "chatlog__content"}
                 ):
                     body = message_body[0]
-                    message_id = body.attrs.get("data-message-id")
                     content = body.get_text().replace("\n\n", "")
+
                 if all([author_id, author_name, message_id, content]):
                     data_group.append(
                         {

@@ -3,6 +3,7 @@ from typing import Optional
 
 from django.db import models
 from django.db.models import Q
+from django.utils.timezone import make_aware
 
 
 class Tag(models.Model):
@@ -31,9 +32,7 @@ class Tag(models.Model):
 class Channel(models.Model):
     """Archived channel instance"""
 
-    discord_id = models.CharField(
-        "channel id", max_length=64, unique=True, null=True, blank=True
-    )
+    discord_id = models.CharField("channel id", max_length=64, null=True, blank=True)
     name = models.CharField(max_length=100)
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, blank=False)
     topic = models.TextField(null=True, blank=True)
@@ -49,9 +48,7 @@ class Channel(models.Model):
 class Author(models.Model):
     """Discord user account instance"""
 
-    discord_id = models.CharField(
-        "author id", max_length=64, unique=True, null=True, blank=True
-    )
+    discord_id = models.CharField("author id", max_length=64, null=True, blank=True)
     name = models.CharField("discord username", max_length=64)
 
     def __str__(self):
@@ -131,7 +128,7 @@ class Nickname(models.Model):
         current = cls.current_nickname(author)
 
         if not start_date:
-            start_date = datetime.datetime.now()
+            start_date = make_aware(datetime.datetime.now())
         new = cls(
             start_date=start_date,
             end_date=end_date,
@@ -144,7 +141,7 @@ class Nickname(models.Model):
         if current and not end_date:
             # If an end date was not provided for the new nickname, assume
             # that the new nickname should become the current nickname
-            current.end_date = datetime.datetime.now()
+            current.end_date = make_aware(datetime.datetime.now())
             current.save()
         return new
 
@@ -152,9 +149,7 @@ class Nickname(models.Model):
 class Message(models.Model):
     """Discord message instance"""
 
-    discord_id = models.CharField(
-        "message id", max_length=64, unique=True, null=True, blank=True
-    )
+    discord_id = models.CharField("message id", max_length=64, null=True, blank=True)
     channel = models.ForeignKey(Channel, on_delete=models.CASCADE)
     nickname = models.ForeignKey(
         Nickname, null=True, blank=True, on_delete=models.SET_NULL

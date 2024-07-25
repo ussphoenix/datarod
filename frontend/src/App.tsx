@@ -44,7 +44,7 @@ const router = createBrowserRouter([
       </Layout>
     ),
     children: [
-      { path: constants.ROUTES.HOME, element: <HomeView /> },
+      { path: "/", element: <HomeView /> },
       {
         path: `${constants.ROUTES.TAGS}/:tagType?`,
         element: <TagsView />,

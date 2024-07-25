@@ -30,10 +30,8 @@ export default {
     },
   },
   ROUTES: {
-    HOME: "",
+    HOME: "/tags/events",
     TAGS: "/tags",
-    EVENTS: "/events",
-    QUARTERS: "/quarters",
     CHANNELS: "/channels",
     CHANNEL: "/channel",
     ADMIN_TAGS: "/admin/tags",
