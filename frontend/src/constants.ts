@@ -6,7 +6,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 export default {
-  BACKEND_URL: "http://localhost:8000/graphql",
+  BACKEND_URL: `${import.meta.env.VITE_BACKEND_URL}`,
   TAG_INFO: {
     EVENTS: {
       name: "Events",

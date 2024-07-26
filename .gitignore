@@ -284,3 +284,4 @@ backend/legacy
 .gitsecret/keys/random_seed
 !*.secret
 dev.env
+prod.env

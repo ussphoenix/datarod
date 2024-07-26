@@ -1,0 +1,116 @@
+services:
+  frontend:
+    tty: true
+    build:
+      context: frontend
+      target: server
+    restart: unless-stopped
+    networks:
+      - proxy
+    expose:
+      - 8080
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.phxfe-http.entrypoints: "web"
+      traefik.http.routers.phxfe-http.rule: "Host(`ussphoenixarchive.com`)"
+      traefik.http.routers.phxfe-http.middlewares: phxfe-redirect-https
+      traefik.http.middlewares.phxfe-redirect-https.redirectscheme.scheme: "https"
+      traefik.http.routers.phxfe.entrypoints: "websecure"
+      traefik.http.routers.phxfe.rule: "Host(`ussphoenixarchive.com`)"
+      traefik.http.routers.phxfe.tls: "true"
+      traefik.http.routers.phxfe.tls.certresolver: "le"
+      traefik.http.services.phxfe.loadbalancer.server.port: 8080
+
+  backend:
+    tty: true
+    build: backend
+    command: gunicorn -b 0.0.0.0:8000 datarod.wsgi
+    env_file:
+      - prod.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      twilight:
+        condition: service_started
+    networks:
+      - proxy
+      - default
+    expose:
+      - 8000
+    labels:
+      traefik.enable: "true"
+      traefik.http.routers.phxbe-http.entrypoints: "web"
+      traefik.http.routers.phxbe-http.rule: "Host(`api.ussphoenixarchive.com`)"
+      traefik.http.routers.phxbe-http.middlewares: phxbe-redirect-https
+      traefik.http.middlewares.phxbe-redirect-https.redirectscheme.scheme: "https"
+      traefik.http.routers.phxbe.entrypoints: "websecure"
+      traefik.http.routers.phxbe.rule: "Host(`api.ussphoenixarchive.com`)"
+      traefik.http.routers.phxbe.tls: "true"
+      traefik.http.routers.phxbe.tls.certresolver: "le"
+      traefik.http.services.phxbe.loadbalancer.server.port: 8000
+
+  # bot:
+  #   tty: true
+  #   build: backend
+  #   command: python manage.py runbot
+  #   restart: unless-stopped
+  #   env_file:
+  #     - prod.env
+  #   depends_on:
+  #     mysql:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy
+  #     twilight:
+  #       condition: service_started
+
+  rq:
+    tty: true
+    build: backend
+    command: python manage.py rqworker high default
+    env_file:
+      - prod.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  mysql:
+    image: mysql:9.0
+    volumes:
+      - mysql-data:/var/lib/mysql
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+
+  twilight:
+    image: ghcr.io/twilight-rs/http-proxy
+    env_file:
+      - prod.env
+
+volumes:
+  mysql-data:
+
+networks:
+  proxy:
+    name: proxy
+    external: true
