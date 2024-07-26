@@ -63,9 +63,8 @@ services:
     image: mysql:9.0
     volumes:
       - mysql-data:/var/lib/mysql
-      - ./docker/mysql/mounts/permissions.sql:/docker-entrypoint-initdb.d/permissions.sql:ro
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    env_file:
+      - dev.env
     ulimits:
       nofile:
         soft: 262144

@@ -18,6 +18,7 @@ django-filter = "^24.2"
 social-auth-app-django = "^5.4.2"
 django-cors-headers = "^4.4.0"
 beautifulsoup4 = "^4.12.3"
+whitenoise = "^6.7.0"
 
 [tool.poetry.group.dev.dependencies]
 black = "^24.4.2"

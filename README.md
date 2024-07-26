@@ -55,26 +55,40 @@ Backend service for datarod and Discord bot for archive data ingestion. [Django]
 
 Frontend service for the Phoenix archive. React + Typescript + Vite.
 
-## Design Concepts
+## Workflow
 
-Messages are associated with Channels. Channels are associated with Tags, which in turn have a Tag Type. The Tag Type could be something like "Event" or "Crew Quarters".
-
-### Workflow
+#### Archiving Channels
 
 Generally, the archive workflow might look like this:
 
 1. Go to the archive site and create a new Tag. (e.g. "Spaceships and Shenanigans" with the Tag Type "Event")
-2. Copy the resulting tag (e.g. "spaceships-and-shenanigans")
+2. Copy the slug you created (e.g. "spaceships-and-shenanigans")
 3. In Discord, open a channel to be archived. Use the `/archive` slash command with the new tag to begin the archive process. (e.g. `/archive spaceships-and-shenanigans`)
 4. Wait to receive a message from the bot indicating the archive process is complete
 5. Check the archive, and then delete the channel
 
-Reset everything:
+#### Importing Old Archives
 
+There are a pair of rough management commands to assist in importing old archives generated with [DiscordChatExporter](https://github.com/Tyrrrz/DiscordChatExporter). Since these archives are HTML files and not a more pristine archive format, the import process is subject to errors, and thus each import thread occurs in a transaction to try to preserve the integrity of the database.
+
+There are two version of the import command, `import_legacy_html` and `import_newer_html`, as the export format from DiscordChatExporter changed during some update. If the HTML file contains the class `chatlog__message-container`, it's a "newer" format. If it does not, it is the "legacy" format.
+
+Create a tag before importing a channel. Then:
+
+```shell
+docker compose run --rm  backend python manage.py import_legacy_html --tag TAG --channel CHANNEL --file "path/to/file.html"
 ```
-from django.core.cache import cache
-from archive.models import Channel, Author
-Channel.objects.all().delete()
-Author.objects.all().delete()
-cache.clear()
+
+Or:
+
+```shell
+docker compose run --rm  backend python manage.py import_newer_html --tag TAG --channel CHANNEL --file "path/to/file.html"
+```
+
+#### Backing Up
+
+The entire archive could (and **should**) be backed up regularly:
+
+```shell
+docker compose exec mysql sh -c 'exec mysqldump --all-databases -uroot -p"$MYSQL_ROOT_PASSWORD"' > ./all-databases.sql
 ```

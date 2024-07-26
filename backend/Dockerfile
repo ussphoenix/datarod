@@ -23,6 +23,13 @@ EOT
 COPY . /app
 WORKDIR /app
 
+# Prepare staticfiles
+RUN <<EOT
+    set -eux
+    cd /app
+    python manage.py collectstatic
+EOT
+
 EXPOSE 8080
 CMD ["gunicorn", \
     "--bind", ":8080", \

@@ -24,22 +24,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-t!m@=it0!#88-n063bw##vtb=^%%__y7tei#2jpl$%l2w3@w_="
+SECRET_KEY = get_env(
+    "SECRET_KEY", "django-insecure-t!m@=it0!#88-n063bw##vtb=^%%__y7tei#2jpl$%l2w3@w_="
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = get_env("DEBUG", False, is_bool=True)
 
-ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
-CSRF_TRUSTED_ORIGINS = ["http://localhost:8080", "http://localhost:8000"]
-CORS_ALLOW_ALL_ORIGINS = True  # Should be off in production
-CORS_ALLOW_CREDENTIALS = True
-CORS_ALLOWED_ORIGIN_REGEXES = [
-    r"^https:\/\/(.+)?\.?phoenixarchive\.com$",
-]
-CORS_ALLOW_HEADERS = (
-    *default_headers,
-    "accept-language",
+ALLOWED_HOSTS = get_env(
+    "ALLOWED_HOSTS", ["0.0.0.0", "localhost", "127.0.0.1"], is_list=True
 )
+CSRF_TRUSTED_ORIGINS = [
+    "https://api.ussphoenixarchive.com",
+    "https://ussphoenixarchive.com",
+]
+CORS_ALLOW_ALL_ORIGINS = get_env("CORS_ALLOW_ALL_ORIGINS", False, is_bool=True)
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = [
+    "https://api.ussphoenixarchive.com",
+    "https://ussphoenixarchive.com",
+]
 
 SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SESSION_COOKIE_HTTPONLY = False
@@ -69,6 +73,7 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -105,11 +110,11 @@ WSGI_APPLICATION = "datarod.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "datarod",
-        "USER": "backend",
-        "PASSWORD": "0f203eb839e64cff091eec9d9cee0162",
-        "HOST": "mysql",
-        "PORT": "3306",
+        "NAME": get_env("DATABASE_NAME", "datarod"),
+        "USER": get_env("DATABASE_USER", "backend"),
+        "PASSWORD": get_env("DATABASE_PASSWORD"),
+        "HOST": get_env("DATABASE_HOST", "mysql"),
+        "PORT": get_env("DATABASE_PORT", "3306"),
     }
 }
 
@@ -157,12 +162,43 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
+STATIC_ROOT = BASE_DIR / "staticfiles"
 STATIC_URL = "static/"
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Logging settings
+
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {
+            "class": "logging.StreamHandler",
+        },
+    },
+    "root": {
+        "handlers": ["console"],
+        "level": "INFO",
+    },
+    "loggers": {
+        "django": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": True,
+        },
+        "django.request": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
 
 
 # Django-RQ
@@ -189,10 +225,18 @@ AUTHENTICATION_BACKENDS = (
 )
 SOCIAL_AUTH_JSONFIELD_ENABLED = True
 SOCIAL_AUTH_REVOKE_TOKENS_ON_DISCONNECT = True
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = "http://localhost:8080/"
-SOCIAL_AUTH_LOGIN_ERROR_URL = "http://error/"
+SOCIAL_AUTH_LOGIN_REDIRECT_URL = get_env(
+    "SOCIAL_AUTH_LOGIN_REDIRECT_URL", "http://localhost:8080/"
+)
+SOCIAL_AUTH_LOGIN_ERROR_URL = get_env(
+    "SOCIAL_AUTH_LOGIN_ERROR_URL", "http://localhost:8080/"
+)
 SOCIAL_AUTH_DISCORD_KEY = get_env("SOCIAL_AUTH_DISCORD_KEY")
 SOCIAL_AUTH_DISCORD_SECRET = get_env("SOCIAL_AUTH_DISCORD_SECRET")
+SOCIAL_AUTH_REDIRECT_IS_HTTPS = get_env(
+    "SOCIAL_AUTH_REDIRECT_IS_HTTPS", False, is_bool=True
+)
+
 SOCIAL_AUTH_PIPELINE = (
     # Get the information we can about the user and return it in a simple
     # format to create the user instance later. In some cases the details are

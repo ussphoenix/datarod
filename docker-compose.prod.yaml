@@ -4,7 +4,7 @@ services:
     build:
       context: frontend
       target: server
-    restart: unless-stopped
+    restart: always
     networks:
       - proxy
     expose:
@@ -24,7 +24,7 @@ services:
   backend:
     tty: true
     build: backend
-    command: gunicorn -b 0.0.0.0:8000 datarod.wsgi
+    restart: always
     env_file:
       - prod.env
     depends_on:
@@ -49,22 +49,22 @@ services:
       traefik.http.routers.phxbe.rule: "Host(`api.ussphoenixarchive.com`)"
       traefik.http.routers.phxbe.tls: "true"
       traefik.http.routers.phxbe.tls.certresolver: "le"
-      traefik.http.services.phxbe.loadbalancer.server.port: 8000
+      traefik.http.services.phxbe.loadbalancer.server.port: 8080
 
-  # bot:
-  #   tty: true
-  #   build: backend
-  #   command: python manage.py runbot
-  #   restart: unless-stopped
-  #   env_file:
-  #     - prod.env
-  #   depends_on:
-  #     mysql:
-  #       condition: service_healthy
-  #     redis:
-  #       condition: service_healthy
-  #     twilight:
-  #       condition: service_started
+  bot:
+    tty: true
+    build: backend
+    command: python manage.py runbot
+    restart: always
+    env_file:
+      - prod.env
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      twilight:
+        condition: service_started
 
   rq:
     tty: true
@@ -72,6 +72,7 @@ services:
     command: python manage.py rqworker high default
     env_file:
       - prod.env
+    restart: always
     depends_on:
       mysql:
         condition: service_healthy
@@ -82,12 +83,13 @@ services:
     image: mysql:9.0
     volumes:
       - mysql-data:/var/lib/mysql
-    environment:
-      MYSQL_ALLOW_EMPTY_PASSWORD: 1
+    env_file:
+      - prod.env
     ulimits:
       nofile:
         soft: 262144
         hard: 262144
+    restart: always
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 1s
@@ -96,6 +98,7 @@ services:
 
   redis:
     image: redis:7-alpine
+    restart: always
     healthcheck:
       test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
       interval: 1s
@@ -104,6 +107,7 @@ services:
 
   twilight:
     image: ghcr.io/twilight-rs/http-proxy
+    restart: always
     env_file:
       - prod.env
 
