@@ -1,20 +1,18 @@
 import graphene
 
 from api.types import (
-    AuthorQuery,
     ChannelQuery,
     MeQuery,
     MessageQuery,
     NicknameQuery,
-    TagQuery,
     TagMutation,
+    TagQuery,
 )
 
 
 class Query(
     TagQuery,
     ChannelQuery,
-    AuthorQuery,
     NicknameQuery,
     MessageQuery,
     MeQuery,

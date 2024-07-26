@@ -116,7 +116,6 @@ export const GET_MESSAGES = gql`
       edges {
         node {
           nickname {
-            discordId
             name
             avatar
           }

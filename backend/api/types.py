@@ -1,16 +1,15 @@
 from typing import Optional
 
 import graphene
-from graphene import ObjectType, relay, Mutation
+from graphene import Mutation, ObjectType, relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
-
-from django.urls import reverse
 from graphql_relay import from_global_id
 
+from django.urls import reverse
 
 from api.utils import login_required, staff_required
-from archive.models import Author, Channel, Message, Nickname, Tag
+from archive.models import Channel, Message, Nickname, Tag
 
 
 class TagType(DjangoObjectType):
@@ -38,10 +37,6 @@ class TagType(DjangoObjectType):
 class TagQuery(ObjectType):
     tag = relay.Node.Field(TagType)
     tags = DjangoFilterConnectionField(TagType)
-
-    @login_required
-    def resolve_tags(root, info, **kwargs):
-        return Tag.objects.all()
 
 
 class TagMutation(Mutation):
@@ -113,44 +108,19 @@ class ChannelQuery(ObjectType):
     channel = relay.Node.Field(ChannelType)
     channels = DjangoFilterConnectionField(ChannelType)
 
-    @login_required
-    def resolve_channels(root, info, **kwargs):
-        return Channel.objects.all()
-
-
-class AuthorType(DjangoObjectType):
-    class Meta:
-        model = Author
-        fields = ("discord_id", "name")
-        filter_fields = {
-            "discord_id": ["exact"],
-            "name": ["exact", "icontains", "istartswith"],
-        }
-        interfaces = (relay.Node,)
-
-
-class AuthorQuery(ObjectType):
-    author = relay.Node.Field(AuthorType)
-    authors = DjangoFilterConnectionField(AuthorType)
-
-    @login_required
-    def resolve_authors(root, info, **kwargs):
-        return Author.objects.all()
-
 
 class NicknameType(DjangoObjectType):
-    discord_id = graphene.String()
+    discord_ids = graphene.List(graphene.String)
+
+    @login_required
+    def resolve_discord_ids(root, info, **kwargs):
+        return [author.discord_id for author in root.authors.all()]
 
     class Meta:
         model = Nickname
-        fields = ("author", "discord_id", "name", "start_date", "end_date", "avatar")
+        fields = ("discord_ids", "name", "avatar")
         filter_fields = {
-            "author": ["exact"],
-            "author__discord_id": ["exact"],
-            "author__name": ["exact", "icontains", "istartswith"],
             "name": ["exact", "icontains", "istartswith"],
-            "start_date": ["gt", "lt"],
-            "end_date": ["gt", "lt"],
         }
         interfaces = (relay.Node,)
 
@@ -158,10 +128,6 @@ class NicknameType(DjangoObjectType):
 class NicknameQuery(ObjectType):
     nickname = relay.Node.Field(NicknameType)
     nicknames = DjangoFilterConnectionField(NicknameType)
-
-    @login_required
-    def resolve_authors(root, info, **kwargs):
-        return Nickname.objects.all()
 
 
 class MessageType(DjangoObjectType):
@@ -179,9 +145,6 @@ class MessageType(DjangoObjectType):
             "channel__tag__tag_type": ["exact"],
             "channel__archive_date": ["gt", "lt"],
             "nickname": ["exact"],
-            "nickname__author": ["exact"],
-            "nickname__author__discord_id": ["exact"],
-            "nickname__author__name": ["exact", "icontains", "istartswith"],
             "nickname__name": ["exact", "icontains", "istartswith"],
             "timestamp": ["gt", "lt"],
         }
@@ -191,10 +154,6 @@ class MessageType(DjangoObjectType):
 class MessageQuery(ObjectType):
     message = relay.Node.Field(MessageType)
     messages = DjangoFilterConnectionField(MessageType)
-
-    @login_required
-    def resolve_authors(root, info, **kwargs):
-        return Message.objects.all()
 
 
 class MeType(ObjectType):

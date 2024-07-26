@@ -9,7 +9,7 @@ from django_rq import job
 from django.conf import settings
 from django.core.cache import cache
 
-from archive.models import Author, Channel, Message, Nickname, Tag
+from archive.models import Channel, Message, Nickname, Tag
 from bot.utils import MessageType, discord_headers, send_discord_message
 
 logger = logging.getLogger(__name__)
@@ -96,17 +96,12 @@ def archive_user(user_id: str) -> Nickname:
         response.raise_for_status()
         data = response.json()
 
-        # Get or create an author
-        (author, _) = Author.objects.get_or_create(
-            discord_id=user_id, name=data.get("user", {}).get("username")
-        )
-
-        # Create a new nickname
+        # Get or create a nickname
         nick = data.get("nick")
         if not nick:
             nick = data.get("user", {}).get("username")
-        nickname = Nickname.get_or_create_for_author(
-            author=author, name=nick, avatar=data.get("user", {}).get("avatar")
+        nickname = Nickname.get_or_create_with_author(
+            name=nick, avatar=data.get("user", {}).get("avatar"), discord_id=user_id
         )
 
         cache.set(f"user-nickname-{user_id}", nickname, 120)

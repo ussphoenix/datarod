@@ -86,7 +86,6 @@ export interface ChannelGQLType {
 
 export interface MessageGQLType {
   nickname: {
-    discordId: string;
     name: string;
     avatar: string;
   };

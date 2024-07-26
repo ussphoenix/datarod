@@ -1,7 +1,7 @@
+from functools import wraps
 from typing import Callable
 
 from graphql import GraphQLError
-from functools import wraps
 
 
 def login_required(f: Callable) -> Callable:

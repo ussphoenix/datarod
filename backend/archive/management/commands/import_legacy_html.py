@@ -1,12 +1,15 @@
-import sys
-import json
 import datetime
+import json
+import sys
+
+from bs4 import BeautifulSoup
+
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from bs4 import BeautifulSoup
-from archive.models import Message, Nickname, Channel, Tag, Author
 from django.db import transaction
 from django.utils.timezone import make_aware
+
+from archive.models import Channel, Message, Nickname, Tag
 
 
 class Command(BaseCommand):
@@ -106,19 +109,9 @@ class Command(BaseCommand):
                         "id": group["author_id"],
                     },
                 }
-                try:
-                    nickname = Nickname.objects.get(
-                        author__discord_id=group["author_id"]
-                    )
-                except Nickname.DoesNotExist:
-                    author, _ = Author.objects.get_or_create(
-                        discord_id=group["author_id"]
-                    )
-                    author.name = group["author_name"]
-                    author.save()
-                    nickname = Nickname.get_or_create_for_author(
-                        author, name=group["author_name"]
-                    )
+                nickname = Nickname.get_or_create_with_author(
+                    name=group["author_name"], discord_id=group["author_id"]
+                )
 
                 message, _ = Message.objects.get_or_create(
                     discord_id=group["message_id"],
