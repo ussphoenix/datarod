@@ -184,12 +184,12 @@ export default function Layout(props: LayoutProps) {
                   </ul>
                 </li>
 
-                <li>
+                {/* <li>
                   <ul>
                     <li>Recent Channels</li>
                     <li className="text-gray-500">Coming Soon</li>
                   </ul>
-                </li>
+                </li> */}
 
                 {me?.isStaff && (
                   <li>
