@@ -2,6 +2,8 @@ import { RocketLaunchIcon } from "@heroicons/react/20/solid";
 import {
   CalendarIcon,
   ChatBubbleBottomCenterIcon,
+  GlobeAmericasIcon,
+  SunIcon,
   UsersIcon,
 } from "@heroicons/react/24/outline";
 
@@ -22,6 +24,16 @@ export default {
       name: "Phoenix B",
       rootPath: "/tags/phoenixb",
       icon: RocketLaunchIcon,
+    },
+    SHORE: {
+      name: "Shore Leaves",
+      rootPath: "/tags/shore",
+      icon: SunIcon,
+    },
+    STARFLEET: {
+      name: "Starfleet Command",
+      rootPath: "/tags/starfleet",
+      icon: GlobeAmericasIcon,
     },
     OTHER: {
       name: "Other",

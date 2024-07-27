@@ -115,6 +115,7 @@ DATABASES = {
         "PASSWORD": get_env("DATABASE_PASSWORD"),
         "HOST": get_env("DATABASE_HOST", "mysql"),
         "PORT": get_env("DATABASE_PORT", "3306"),
+        "OPTIONS": {"charset": "utf8mb4"},
     }
 }
 

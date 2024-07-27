@@ -13,6 +13,8 @@ class Tag(models.Model):
         EVENTS = "events", "Events"
         QUARTERS = "quarters", "Crew Quarters"
         PHOENIXB = "phoenixb", "Phoenix B"
+        SHORE = "shore", "Shore Leaves"
+        STARFLEET = "starfleet", "Starfleet Command"
         OTHER = "other", "Other"
 
     name = models.CharField(max_length=128)
@@ -65,7 +67,7 @@ class Nickname(models.Model):
     """
 
     authors = models.ManyToManyField(Author)
-    name = models.CharField("nickname", max_length=64)
+    name = models.CharField("nickname", max_length=96)
     avatar = models.CharField(max_length=256, null=True, blank=True)
 
     def __str__(self):
