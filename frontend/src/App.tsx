@@ -4,6 +4,7 @@ import { AuthRequired, Layout, StaffRequired } from "@components";
 import constants from "@constants";
 import { ClientProvider } from "@providers/ClientProvider";
 import { MeProvider } from "@providers/MeProvider";
+import { RecentChannelProvider } from "@providers/RecentChannelsProvider";
 import { ErrorView } from "@views/ErrorView";
 import { HomeView } from "@views/HomeView";
 import { NotFoundView } from "@views/NotFoundView";
@@ -25,7 +26,9 @@ function Root(): React.JSX.Element {
       <ClientProvider>
         <MeProvider>
           <AuthRequired>
-            <Layout />
+            <RecentChannelProvider>
+              <Layout />
+            </RecentChannelProvider>
           </AuthRequired>
         </MeProvider>
       </ClientProvider>

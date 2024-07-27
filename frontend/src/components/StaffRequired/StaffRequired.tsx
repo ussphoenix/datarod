@@ -1,12 +1,10 @@
-import { useContext } from "react";
-
-import { MeContext } from "@providers/MeProvider";
+import { useMe } from "@providers/MeProvider";
 
 export default function StaffRequired(
   props: React.PropsWithChildren,
 ): React.ReactNode {
   const { children } = props;
-  const { me } = useContext(MeContext);
+  const { me } = useMe();
 
   if (me && me?.isStaff) {
     return children;

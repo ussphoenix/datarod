@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useState } from "react";
 
 import constants from "@constants";
 import {
@@ -13,7 +13,8 @@ import {
   TagIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
-import { MeContext } from "@providers/MeProvider";
+import { useMe } from "@providers/MeProvider";
+import { useRecentChannels } from "@providers/RecentChannelsProvider";
 import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 import { Outlet } from "react-router-dom";
@@ -34,7 +35,8 @@ const navigation = [
 export default function Layout(props: LayoutProps) {
   const { children } = props;
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { me } = useContext(MeContext);
+  const { channels: channelHistory } = useRecentChannels();
+  const { me } = useMe();
 
   return (
     <>
@@ -184,12 +186,30 @@ export default function Layout(props: LayoutProps) {
                   </ul>
                 </li>
 
-                {/* <li>
+                <li>
                   <ul>
                     <li>Recent Channels</li>
-                    <li className="text-gray-500">Coming Soon</li>
+                    <li className="text-gray-400">
+                      <ul>
+                        {!channelHistory.length && (
+                          <li className="ml-2 mt-1 text-gray-500">
+                            No recent channels (yet!)
+                          </li>
+                        )}
+                        {channelHistory?.map((channel) => (
+                          <li key={channel?.id} className="ml-2 mt-1">
+                            <NavLink
+                              className="hover:text-lcarsBlue-300 hover:underline"
+                              to={`${constants.ROUTES.CHANNEL}/${channel?.id}`}
+                            >
+                              #{channel?.name}
+                            </NavLink>
+                          </li>
+                        ))}
+                      </ul>
+                    </li>
                   </ul>
-                </li> */}
+                </li>
 
                 {me?.isStaff && (
                   <li>

@@ -11,6 +11,7 @@ import {
 } from "@components";
 import constants from "@constants";
 import { HashtagIcon } from "@heroicons/react/20/solid";
+import { useRecentChannels } from "@providers/RecentChannelsProvider";
 import { GET_MESSAGES } from "@queries";
 import type {
   ChannelGQLType,
@@ -26,11 +27,15 @@ type ChannelQuery = RelayEdges<MessageGQLType> & { channel: ChannelGQLType };
 
 export default function ChannelView(): React.JSX.Element {
   const { channelId } = useParams();
+  const { addChannel } = useRecentChannels();
   const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { data, loading, error, fetchMore } = useQuery<ChannelQuery>(
     GET_MESSAGES,
     {
       variables: { channel: channelId },
+      onCompleted: (data) => {
+        addChannel({ name: data?.channel?.name, id: data?.channel?.id });
+      },
     },
   );
 
@@ -110,8 +115,9 @@ export default function ChannelView(): React.JSX.Element {
                 className="h-10 w-10 rounded-full"
                 alt=""
                 src={
-                  edge?.node?.nickname?.avatar
-                    ? `https://cdn.discordapp.com/avatars/${edge?.node?.nickname?.discordId}/${edge?.node?.nickname?.avatar}.webp?size=60`
+                  edge?.node?.nickname?.avatar &&
+                  edge?.node?.nickname?.discordIds
+                    ? `https://cdn.discordapp.com/avatars/${edge?.node?.nickname?.discordIds[0]}/${edge?.node?.nickname?.avatar}.webp?size=60`
                     : "/static/images/profileDefault.png"
                 }
               />

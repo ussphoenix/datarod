@@ -6,7 +6,9 @@ import constants from "@constants";
  * ClientProvider wraps ApolloProvider to provide an
  * authenticated ApolloClient to all children
  */
-function ClientProvider(props: React.PropsWithChildren): React.JSX.Element {
+export function ClientProvider(
+  props: React.PropsWithChildren,
+): React.JSX.Element {
   const { children } = props;
 
   const client = new ApolloClient({
@@ -50,5 +52,3 @@ function ClientProvider(props: React.PropsWithChildren): React.JSX.Element {
 
   return <ApolloProvider client={client}>{children}</ApolloProvider>;
 }
-
-export { ClientProvider };

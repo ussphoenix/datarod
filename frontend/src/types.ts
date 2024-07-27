@@ -88,6 +88,7 @@ export interface MessageGQLType {
   nickname: {
     name: string;
     avatar: string;
+    discordIds: string[];
   };
   timestamp: string;
   rawMessage: string;

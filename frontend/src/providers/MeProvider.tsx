@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 import { useQuery } from "@apollo/client";
 import { GET_ME } from "@queries";
@@ -36,4 +36,15 @@ export function MeProvider(props: React.PropsWithChildren): React.JSX.Element {
       {children}
     </MeContext.Provider>
   );
+}
+
+/**
+ * React hook to access MeContext as a shortcut
+ */
+export function useMe() {
+  const context = useContext(MeContext);
+  if (context == undefined) {
+    throw new Error("useMe must be used inside of MeProvider");
+  }
+  return context;
 }

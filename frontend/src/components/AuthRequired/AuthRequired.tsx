@@ -1,7 +1,5 @@
-import { useContext } from "react";
-
 import { GridLoading, Layout } from "@components";
-import { MeContext, type MeContextInterface } from "@providers/MeProvider";
+import { useMe } from "@providers/MeProvider";
 import { ErrorView } from "@views/ErrorView";
 import { SuspenseView } from "@views/SuspenseView";
 
@@ -13,7 +11,7 @@ export default function AuthRequired(
   props: React.PropsWithChildren,
 ): React.ReactNode {
   const { children } = props;
-  const { me, meError }: MeContextInterface = useContext(MeContext);
+  const { me, meError } = useMe();
 
   // Loading failed (context provider displayed an error toast)
   if (meError) {
