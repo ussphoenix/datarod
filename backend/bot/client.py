@@ -53,12 +53,12 @@ async def tag_autocomplete(
     interaction: discord.Interaction, current: str
 ) -> List[app_commands.Choice[str]]:
     """Render autocomplete suggestions for tags"""
-    tags = [tag.slug async for tag in Tag.objects.filter()]
+    tags = [tag.slug async for tag in Tag.objects.filter().order_by("pk")]
     return [
         app_commands.Choice(name=tag, value=tag)
         for tag in tags
         if current.lower() in tag.lower()
-    ]
+    ][:20]
 
 
 @client.tree.command(

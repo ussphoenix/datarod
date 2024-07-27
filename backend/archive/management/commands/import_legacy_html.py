@@ -6,7 +6,6 @@ from bs4 import BeautifulSoup
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.db import transaction
 from django.utils.timezone import make_aware
 
 from archive.models import Channel, Message, Nickname, Tag
@@ -35,7 +34,6 @@ class Command(BaseCommand):
             help="HTML File",
         )
 
-    @transaction.atomic
     def handle(self, *args, **options):
         tag_slug = options["tag"]
         channel_name = options["channel"]
