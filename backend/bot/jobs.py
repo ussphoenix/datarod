@@ -100,8 +100,14 @@ def archive_user(user_id: str) -> Nickname:
         nick = data.get("nick")
         if not nick:
             nick = data.get("user", {}).get("username")
+
+        # Merge the user ID and avatar ID to store as the avatar data
+        # (The path to an avatar is https://cdn.discordapp.com/avatars/<USER_ID>/<AVATAR_ID>.webp)
+        if avatar := data.get("user", {}).get("avatar"):
+            avatar = f"{user_id}/{avatar}"
+
         nickname = Nickname.get_or_create_with_author(
-            name=nick, avatar=data.get("user", {}).get("avatar"), discord_id=user_id
+            name=nick, avatar=avatar, discord_id=user_id
         )
 
         cache.set(f"user-nickname-{user_id}", nickname, 120)

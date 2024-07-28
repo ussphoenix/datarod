@@ -35,7 +35,7 @@ const navigation = [
 export default function Layout(props: LayoutProps) {
   const { children } = props;
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const { channels: channelHistory } = useRecentChannels();
+  const { channels: channelHistory, clearChannels } = useRecentChannels();
   const { me } = useMe();
 
   return (
@@ -188,7 +188,16 @@ export default function Layout(props: LayoutProps) {
 
                 <li>
                   <ul>
-                    <li>Recent Channels</li>
+                    <li className="group flex justify-between">
+                      Recent Channels
+                      <button
+                        type="button"
+                        className="hidden group-hover:block"
+                        onClick={() => clearChannels()}
+                      >
+                        <XMarkIcon className="size-5 text-white hover:text-lcarsPink-100" />
+                      </button>
+                    </li>
                     <li className="text-gray-400">
                       <ul>
                         {!channelHistory.length && (

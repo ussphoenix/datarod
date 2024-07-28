@@ -115,9 +115,8 @@ export default function ChannelView(): React.JSX.Element {
                 className="h-10 w-10 rounded-full"
                 alt=""
                 src={
-                  edge?.node?.nickname?.avatar &&
-                  edge?.node?.nickname?.discordIds
-                    ? `https://cdn.discordapp.com/avatars/${edge?.node?.nickname?.discordIds[0]}/${edge?.node?.nickname?.avatar}.webp?size=60`
+                  edge?.node?.nickname?.avatar
+                    ? `https://cdn.discordapp.com/avatars/${edge?.node?.nickname?.avatar}.webp?size=60`
                     : "/static/images/profileDefault.png"
                 }
               />
@@ -125,7 +124,7 @@ export default function ChannelView(): React.JSX.Element {
             <div>
               <div className="pb-1">
                 <span className="text-semibold text-lcarsBlue-300">
-                  {edge?.node?.nickname?.name}
+                  {edge?.node?.nickname?.name || "Deleted User"}
                 </span>
                 <span className="ps-3 text-sm text-gray-400">
                   {parseDate(edge?.node?.timestamp)}

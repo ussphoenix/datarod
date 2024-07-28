@@ -88,6 +88,7 @@ class Nickname(models.Model):
         """Create a new Nickname if one does not exist,
         and create a new Author if one does not exist"""
         nickname, _ = cls.objects.get_or_create(name=name)
+        nickname.avatar = avatar
         nickname.add_author(discord_id)
         nickname.save()
         return nickname
