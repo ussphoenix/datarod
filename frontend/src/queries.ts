@@ -116,6 +116,7 @@ export const GET_MESSAGES = gql`
       edges {
         node {
           nickname {
+            id
             name
             avatar
           }
@@ -154,6 +155,18 @@ export const MUTATE_TAG = gql`
         description
         startDate
         endDate
+      }
+    }
+  }
+`;
+
+export const MUTATE_NICKNAME = gql`
+  mutation MutateNickname($id: ID!, $name: String, $avatar: String) {
+    nickname(id: $id, name: $name, avatar: $avatar) {
+      nickname {
+        id
+        name
+        avatar
       }
     }
   }

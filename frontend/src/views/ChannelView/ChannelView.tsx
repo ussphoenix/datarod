@@ -4,6 +4,7 @@ import { useQuery } from "@apollo/client";
 import {
   type Breadcrumb,
   Breadcrumbs,
+  MessageRow,
   NoContent,
   ReachedBottom,
   RowLoading,
@@ -13,12 +14,7 @@ import constants from "@constants";
 import { HashtagIcon } from "@heroicons/react/20/solid";
 import { useRecentChannels } from "@providers/RecentChannelsProvider";
 import { GET_MESSAGES } from "@queries";
-import type {
-  ChannelGQLType,
-  DiscordMessage,
-  MessageGQLType,
-  RelayEdges,
-} from "@types";
+import type { ChannelGQLType, MessageGQLType, RelayEdges } from "@types";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
@@ -38,17 +34,6 @@ export default function ChannelView(): React.JSX.Element {
       },
     },
   );
-
-  const parseMessage = (rawMessage?: string): DiscordMessage | null => {
-    if (!rawMessage) return null;
-    return JSON.parse(rawMessage);
-  };
-
-  const parseDate = (datestring?: string): string | null => {
-    if (!datestring) return null;
-    const parsed = new Date(datestring);
-    return parsed?.toLocaleString();
-  };
 
   // Generate breadcrumb trail based on tag type
   const breadcrumbs: Breadcrumb[] = [
@@ -105,34 +90,8 @@ export default function ChannelView(): React.JSX.Element {
       )}
 
       {data &&
-        data?.messages?.edges?.map((edge) => (
-          <div
-            key={edge?.node?.timestamp}
-            className="flex w-full space-x-3 border-b border-b-gray-900 py-5"
-          >
-            <div className="shrink-0">
-              <img
-                className="h-10 w-10 rounded-full"
-                alt=""
-                src={
-                  edge?.node?.nickname?.avatar
-                    ? `https://cdn.discordapp.com/avatars/${edge?.node?.nickname?.avatar}.webp?size=60`
-                    : "/static/images/profileDefault.png"
-                }
-              />
-            </div>
-            <div>
-              <div className="pb-1">
-                <span className="text-semibold text-lcarsBlue-300">
-                  {edge?.node?.nickname?.name || "Deleted User"}
-                </span>
-                <span className="ps-3 text-sm text-gray-400">
-                  {parseDate(edge?.node?.timestamp)}
-                </span>
-              </div>
-              <div>{parseMessage(edge?.node?.rawMessage)?.content}</div>
-            </div>
-          </div>
+        data?.messages?.edges?.map(({ node }) => (
+          <MessageRow key={node?.timestamp} message={node} />
         ))}
 
       {!loading && !error && !data?.messages?.edges?.length && <NoContent />}

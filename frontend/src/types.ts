@@ -84,12 +84,15 @@ export interface ChannelGQLType {
   archiveDate: string;
 }
 
+export interface NicknameGQLType {
+  id: string;
+  name: string;
+  avatar: string;
+  discordIds: string[];
+}
+
 export interface MessageGQLType {
-  nickname: {
-    name: string;
-    avatar: string;
-    discordIds: string[];
-  };
+  nickname: NicknameGQLType;
   timestamp: string;
   rawMessage: string;
 }

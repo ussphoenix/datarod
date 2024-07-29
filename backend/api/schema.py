@@ -4,6 +4,7 @@ from api.types import (
     ChannelQuery,
     MeQuery,
     MessageQuery,
+    NicknameMutation,
     NicknameQuery,
     TagMutation,
     TagQuery,
@@ -22,6 +23,7 @@ class Query(
 
 class Mutation(graphene.ObjectType):
     tag = TagMutation.Field()
+    nickname = NicknameMutation.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)

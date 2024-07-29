@@ -118,7 +118,7 @@ class NicknameType(DjangoObjectType):
 
     class Meta:
         model = Nickname
-        fields = ("discord_ids", "name", "avatar")
+        fields = ("id", "discord_ids", "name", "avatar")
         filter_fields = {
             "name": ["exact", "icontains", "istartswith"],
         }
@@ -128,6 +128,26 @@ class NicknameType(DjangoObjectType):
 class NicknameQuery(ObjectType):
     nickname = relay.Node.Field(NicknameType)
     nicknames = DjangoFilterConnectionField(NicknameType)
+
+
+class NicknameMutation(Mutation):
+    class Input:
+        id = graphene.ID(required=True)
+        name = graphene.String()
+        avatar = graphene.String()
+
+    nickname = graphene.Field(NicknameType)
+
+    @login_required
+    @staff_required
+    def mutate(root, info, id, name=None, avatar=None):
+        nickname = Nickname.objects.get(pk=from_global_id(id).id)
+        if name:
+            nickname.name = name
+        if avatar:
+            nickname.avatar = avatar
+        nickname.save()
+        return NicknameMutation(nickname=nickname)
 
 
 class MessageType(DjangoObjectType):

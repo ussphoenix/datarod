@@ -3,6 +3,7 @@ export { Breadcrumbs, type Breadcrumb } from "./Breadcrumbs";
 export { ChannelCard } from "./ChannelCard";
 export { GridLoading } from "./GridLoading";
 export { Layout } from "./Layout";
+export { MessageRow } from "./MessageRow";
 export { NoContent } from "./NoContent";
 export { ReachedBottom } from "./ReachedBottom";
 export { RowLoading } from "./RowLoading";
