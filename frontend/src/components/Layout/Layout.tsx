@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import { SearchBar } from "@components";
 import constants from "@constants";
 import {
   Dialog,
@@ -16,8 +17,7 @@ import {
 import { useMe } from "@providers/MeProvider";
 import { useRecentChannels } from "@providers/RecentChannelsProvider";
 import clsx from "clsx";
-import { NavLink } from "react-router-dom";
-import { Outlet } from "react-router-dom";
+import { NavLink, Outlet } from "react-router-dom";
 
 interface LayoutProps {
   children?: React.ReactNode;
@@ -81,6 +81,9 @@ export default function Layout(props: LayoutProps) {
                     Phoenix Archive
                   </NavLink>
                 </div>
+
+                <SearchBar />
+
                 <nav className="flex flex-1 flex-col">
                   <ul role="list" className="flex flex-1 flex-col gap-y-7">
                     <li>
@@ -158,10 +161,13 @@ export default function Layout(props: LayoutProps) {
                 Phoenix Archive
               </NavLink>
             </div>
+
+            <SearchBar />
+
             <nav className="flex flex-1 flex-col">
               <ul role="list" className="flex flex-1 flex-col gap-y-7">
                 <li>
-                  <ul role="list" className="-mx-2 space-y-1">
+                  <ul role="list" className="space-y-1">
                     {navigation.map((item) => (
                       <li key={item.name}>
                         <NavLink

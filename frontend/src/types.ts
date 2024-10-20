@@ -96,3 +96,20 @@ export interface MessageGQLType {
   timestamp: string;
   rawMessage: string;
 }
+
+export interface TagsChannelsSearchGQLType {
+  channels: {
+    pageInfo?: PageInfoGQLType;
+    edges: { node: { id: string; name: string } }[];
+  };
+  tags: {
+    pageInfo?: PageInfoGQLType;
+    edges: {
+      node: {
+        id: string;
+        name: string;
+        tagType: TagType;
+      };
+    }[];
+  };
+}

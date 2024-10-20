@@ -128,6 +128,34 @@ export const GET_MESSAGES = gql`
   }
 `;
 
+export const SEARCH_TAGS_CHANNELS = gql`
+  query SearchTagsAndChannels($term: String, $first: Int = 5) {
+    tags(name_Icontains: $term, first: $first) {
+      pageInfo {
+        hasNextPage
+      }
+      edges {
+        node {
+          id
+          name
+          tagType
+        }
+      }
+    }
+    channels(name_Icontains: $term, first: $first) {
+      pageInfo {
+        hasNextPage
+      }
+      edges {
+        node {
+          id
+          name
+        }
+      }
+    }
+  }
+`;
+
 export const MUTATE_TAG = gql`
   mutation MutateTag(
     $id: ID

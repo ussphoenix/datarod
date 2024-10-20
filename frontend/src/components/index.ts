@@ -8,5 +8,6 @@ export { NoContent } from "./NoContent";
 export { ReachedBottom } from "./ReachedBottom";
 export { RowLoading } from "./RowLoading";
 export { ScrollToTop } from "./ScrollToTop";
+export { SearchBar } from "./SearchBar";
 export { StaffRequired } from "./StaffRequired";
 export { TagCard } from "./TagCard";
