@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Tuple
+from typing import Tuple, List
 from urllib.parse import urljoin
 
 import requests
@@ -29,15 +29,16 @@ def archive_channel(channel_id: str, tag: Tag) -> Tuple[Channel, bool]:
     response = requests.get(url, headers=discord_headers)
     response.raise_for_status()
     data = response.json()
-    (channel, created) = Channel.objects.get_or_create(discord_id=channel_id)
+    (channel, created) = Channel.objects.get_or_create(discord_id=channel_id, tag=tag)
     channel.name = data.get("name")
     channel.topic = data.get("topic")
-    channel.tag = tag
     channel.save()
     return channel, created
 
 
-def archive_messages(channel: Channel, before: str) -> Tuple[str, bool]:
+def archive_messages(
+    channel: Channel, before: str, after: str = None
+) -> Tuple[str, bool]:
     """Fetch messages from Discord's API and persist to database
     This method will fetch and archive messages in groups of 100, and will return True
     if there are more messages  (and this method should be run again)
@@ -56,6 +57,10 @@ def archive_messages(channel: Channel, before: str) -> Tuple[str, bool]:
     data = response.json()
 
     for message_details in data:
+        # If this message matches our "after" constraint, stop and do not archive it
+        if message_details.get("id") == after:
+            return None, False
+
         (message, created) = Message.objects.get_or_create(
             discord_id=message_details.get("id"), channel=channel
         )
@@ -119,7 +124,9 @@ def archive_user(user_id: str) -> Nickname:
 
 
 @job
-def archive_discord_channel(channel_id: str, tag_slug: str, user_id: str):
+def archive_discord_channel(
+    channel_id: str, tag_slug: str, user_id: str, after: str = None, before: str = None
+):
     """Fetch messages from Discord's API and persist to database
     This is a long running job and is expected to be run in rq
 
@@ -154,9 +161,11 @@ def archive_discord_channel(channel_id: str, tag_slug: str, user_id: str):
 
     # Archive all messages in channel - this loop will continue until complete
     try:
-        before = None
+        before = before or None
         while True:
-            before, more = archive_messages(channel=channel, before=before)
+            before, more = archive_messages(
+                channel=channel, before=before, after=after or None
+            )
             if not more:
                 break
     except Exception as e:

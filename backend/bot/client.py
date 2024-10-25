@@ -69,10 +69,17 @@ async def tag_autocomplete(
 @app_commands.allowed_contexts(guilds=True, dms=False, private_channels=False)
 @app_commands.check(can_access_bot)
 @app_commands.autocomplete(tag=tag_autocomplete)
-async def archive(interaction: discord.Interaction, tag: str):
+async def archive(
+    interaction: discord.Interaction, tag: str, after: str = None, before: str = None
+):
     await interaction.response.send_message(
-        f"Archiving channel `#{interaction.channel.name}` to tag `{tag}`. This might take a minute, I'll message you when I'm done."
+        f"Archiving channel `#{interaction.channel.name}` to tag `{tag}`. This might take a minute, I'll message you when I'm done.",
+        ephemeral=True,
     )
     await sync_to_async(archive_discord_channel.delay)(
-        channel_id=interaction.channel.id, tag_slug=tag, user_id=interaction.user.id
+        channel_id=interaction.channel.id,
+        tag_slug=tag,
+        user_id=interaction.user.id,
+        after=after,
+        before=before,
     )

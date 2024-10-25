@@ -57,15 +57,28 @@ Frontend service for the Phoenix archive. React + Typescript + Vite.
 
 ## Workflow
 
-#### Archiving Channels
+#### Archiving Full Channels
 
 Generally, the archive workflow might look like this:
 
 1. Go to the archive site and create a new Tag. (e.g. "Spaceships and Shenanigans" with the Tag Type "Event")
 2. Copy the slug you created (e.g. "spaceships-and-shenanigans")
-3. In Discord, open a channel to be archived. Use the `/archive` slash command with the new tag to begin the archive process. (e.g. `/archive spaceships-and-shenanigans`)
+3. In Discord, open a channel to be archived. Use the `/archive` slash command with the new tag to begin the archive process. (e.g. `/archive tag spaceships-and-shenanigans`)
 4. Wait to receive a message from the bot indicating the archive process is complete
 5. Check the archive, and then delete the channel
+
+#### Archiving Partial Channels
+
+It is also possible to archive _between_ two messages in a channel. To do this, you must have enabled _Developer Mode_ enabled to copy message ID's (`User Settings` > `Advanced` > `Developer Mode`)
+
+1. Go to the archive site and create a new Tag. (e.g. "Spaceships and Shenanigans" with the Tag Type "Event")
+2. Copy the slug you created (e.g. "spaceships-and-shenanigans")
+3. In Discord, open a channel to be archived.
+4. Find the message that is **one message older** than the first message you want to archive. Right-click and "Copy Message ID". Save this somewhere.
+5. Find the message that is **one message newer** than the last message you want to archive. Right-click and "Copy Message ID". Save this somewhere.
+6. Use the `/archive` command to archive the channel. Include the optional `after` and `before` parameters. (e.g. `/archive tag spaceships-and-shenanigans after 1299514391569502239 before 1299514407675756625`)
+7. Wait to receive a message from the bot indicating the archive process is complete
+8. Check the archive, and then delete the channel
 
 #### Importing Old Archives
 
