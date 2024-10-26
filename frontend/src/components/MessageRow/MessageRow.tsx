@@ -102,7 +102,10 @@ export default function MessageRow(props: MessageRowProps): React.JSX.Element {
               )}
             </Formik>
           ) : (
-            <span className="text-semibold text-lcarsBlue-300">
+            <span
+              style={{ color: `#${message?.nickname?.color || "FFFFFF"}` }}
+              className="text-semibold"
+            >
               {message?.nickname?.name || "Deleted User"}
             </span>
           )}

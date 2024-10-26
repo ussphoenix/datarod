@@ -69,6 +69,7 @@ class Nickname(models.Model):
     authors = models.ManyToManyField(Author)
     name = models.CharField("nickname", max_length=96)
     avatar = models.CharField(max_length=256, null=True, blank=True)
+    color = models.CharField("hex color code", max_length=6, null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -77,6 +78,11 @@ class Nickname(models.Model):
         """Get or create an Author by discord id and add to this Nickname"""
         author, _created = Author.objects.get_or_create(discord_id=discord_id)
         self.authors.add(author)
+
+    @property
+    def last_author(self):
+        """Return the last Author that used this Nickname"""
+        return self.authors.last()
 
     @classmethod
     def get_or_create_with_author(

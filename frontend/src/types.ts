@@ -88,6 +88,7 @@ export interface NicknameGQLType {
   id: string;
   name: string;
   avatar: string;
+  color: string | null;
   discordIds: string[];
 }
 

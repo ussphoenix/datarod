@@ -119,6 +119,7 @@ export const GET_MESSAGES = gql`
             id
             name
             avatar
+            color
           }
           timestamp
           rawMessage

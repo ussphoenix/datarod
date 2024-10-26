@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import Tuple, List
+from typing import List, Tuple
 from urllib.parse import urljoin
 
 import requests
@@ -85,6 +85,7 @@ def archive_user(user_id: str) -> Nickname:
     for each unique combination of a user ID and nickname.
     Cache the result for a short time as this job may be called several
     times in succession for a user.
+
     Args:
         user_id (str): Discord user ID
     """
@@ -115,12 +116,72 @@ def archive_user(user_id: str) -> Nickname:
             name=nick, avatar=avatar, discord_id=user_id
         )
 
+        # Fetch nickname color as a background job
+        update_color_from_roles.delay(nickname)
+
         cache.set(f"user-nickname-{user_id}", nickname, 120)
     except Exception as e:
         logger.exception(e)
         return
 
     return nickname
+
+
+@job
+def update_color_from_roles(nickname: Nickname):
+    """Use the Discord API to update the nickname color
+    Fetch the user's roles in the guild and use the role's color
+
+    Args:
+        nickname: Nickname instance
+    """
+    # Get guild role list from Discord
+    guild_roles = cache.get("guild-roles")
+    if not guild_roles:
+        try:
+            url = urljoin(
+                settings.DISCORD_BASE_URL,
+                f"guilds/{settings.DISCORD_GUILD_ID}/roles",
+            )
+            response = requests.get(url, headers=discord_headers)
+            response.raise_for_status()
+            data = response.json()
+
+            # Sort by position key, filter out color-less roles and roles with users
+            # that are not displayed independently from other roles
+            data.sort(key=lambda x: x["position"], reverse=True)
+            data = list(
+                filter(lambda x: all([x["color"] > 0, x["hoist"] == True]), data)
+            )
+            cache.set("guild-roles", data, 120)
+            guild_roles = data
+        except Exception as e:
+            logger.exception(e)
+            return
+
+    try:
+        # Get member details from Discord
+        url = urljoin(
+            settings.DISCORD_BASE_URL,
+            f"guilds/{settings.DISCORD_GUILD_ID}/members/{nickname.last_author.discord_id}",
+        )
+        response = requests.get(url, headers=discord_headers)
+        response.raise_for_status()
+        data = response.json()
+
+        # Filter roles list by user's roles
+        roles = list(filter(lambda x: x["id"] in data.get("roles", []), guild_roles))
+        principal_role = roles[0]
+
+        # Store color on nickname if role has a color
+        if role_color := principal_role.get("color"):
+            if role_color > 0:
+                nickname.color = "{:x}".format(role_color).upper()
+                nickname.save()
+
+    except Exception as e:
+        logger.exception(e)
+        return
 
 
 @job

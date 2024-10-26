@@ -118,7 +118,7 @@ class NicknameType(DjangoObjectType):
 
     class Meta:
         model = Nickname
-        fields = ("id", "discord_ids", "name", "avatar")
+        fields = ("id", "discord_ids", "name", "avatar", "color")
         filter_fields = {
             "name": ["exact", "icontains", "istartswith"],
         }
@@ -135,6 +135,7 @@ class NicknameMutation(Mutation):
         id = graphene.ID(required=True)
         name = graphene.String()
         avatar = graphene.String()
+        color = graphene.String()
 
     nickname = graphene.Field(NicknameType)
 
@@ -146,6 +147,8 @@ class NicknameMutation(Mutation):
             nickname.name = name
         if avatar:
             nickname.avatar = avatar
+        if color:
+            nickname.color = color
         nickname.save()
         return NicknameMutation(nickname=nickname)
 
