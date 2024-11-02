@@ -9,6 +9,7 @@ import {
 
 export default {
   BACKEND_URL: `${import.meta.env.VITE_BACKEND_URL}`,
+  MEDIA_URL: `${import.meta.env.VITE_MEDIA_URL}`,
   TAG_INFO: {
     EVENTS: {
       name: "Events",

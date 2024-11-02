@@ -4,6 +4,7 @@ import graphene
 from graphene import Mutation, ObjectType, relay
 from graphene_django import DjangoObjectType
 from graphene_django.filter import DjangoFilterConnectionField
+from graphene_file_upload.scalars import Upload
 from graphql_relay import from_global_id
 
 from django.urls import reverse
@@ -19,6 +20,7 @@ class TagType(DjangoObjectType):
             "id",
             "name",
             "slug",
+            "banner",
             "tag_type",
             "description",
             "start_date",
@@ -43,6 +45,8 @@ class TagMutation(Mutation):
     class Input:
         id = graphene.ID()
         name = graphene.String(required=True)
+        banner = Upload()
+        clear_banner = graphene.Boolean()
         tag_type = graphene.String(
             required=True
         )  # This really should be a choices-derived ENUM...
@@ -62,6 +66,8 @@ class TagMutation(Mutation):
         name,
         tag_type,
         slug,
+        clear_banner=False,
+        banner=None,
         id=None,
         description=None,
         start_date=None,
@@ -83,6 +89,12 @@ class TagMutation(Mutation):
                 setattr(tag, key, value)
         else:
             tag = Tag(**update_fields)
+
+        # Update (or clear) tag banner
+        if clear_banner:
+            tag.banner = None
+        elif banner:
+            tag.banner = banner
 
         tag.save()
         return TagMutation(tag=tag)

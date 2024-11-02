@@ -15,9 +15,10 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 
-from graphene_django.views import GraphQLView
+from graphene_file_upload.django import FileUploadGraphQLView
 
 from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.contrib.auth import logout
 from django.shortcuts import redirect
@@ -33,9 +34,24 @@ def logout_view(request):
 
 
 urlpatterns = [
-    path("", include("social_django.urls", namespace="social")),
-    path("logout", logout_view, name="logout"),
-    path("admin/", admin.site.urls),
-    path("django-rq/", include("django_rq.urls")),
-    path("graphql", csrf_exempt(GraphQLView.as_view(graphiql=True, schema=schema))),
+    path(
+        "backend/",
+        include(
+            [
+                path("", include("social_django.urls", namespace="social")),
+                path("logout", logout_view, name="logout"),
+                path("admin/", admin.site.urls),
+                path("django-rq/", include("django_rq.urls")),
+                path(
+                    "graphql",
+                    csrf_exempt(
+                        FileUploadGraphQLView.as_view(graphiql=True, schema=schema)
+                    ),
+                ),
+            ]
+        ),
+    ),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

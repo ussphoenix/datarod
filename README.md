@@ -15,7 +15,7 @@ Run the whole project:
 docker compose build
 
 # Optional: keep database and proxy running in the background
-docker compose up -d mysql redis twilight
+docker compose up -d mysql valkey twilight
 
 # Run once: apply migrations and create a superuser
 docker compose run --rm  backend python manage.py migrate
@@ -27,8 +27,8 @@ docker compose up
 Once the project has started up:
 
 - Navigate to [localhost:8080](http://localhost:8080) to view the frontend app
-- Navigate to [localhost:8000/admin](http://localhost:8000/admin) to view the backend admin
-- Navigate to [localhost:8000/graphql](http://localhost:8000/graphql) to view the graphql schema browser
+- Navigate to [localhost:8000/backend/admin](http://localhost:8000/backend/admin) to view the backend admin
+- Navigate to [localhost:8000/backend/graphql](http://localhost:8000/backend/graphql) to view the graphql schema browser
 
 ## Installation
 
@@ -47,7 +47,7 @@ Backend service for datarod and Discord bot for archive data ingestion. [Django]
 ### Components
 
 - `mysql` - Database
-- `redis` - Memory store
+- `valkey` - Memory store
 - `django-rq` - Async task queue
 - `twilight-rs` - HTTP reverse proxy for Discord's API to handle rate limiting
 

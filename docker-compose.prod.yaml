@@ -5,10 +5,11 @@ services:
       context: frontend
       target: server
     restart: always
+    volumes:
+      - media:/usr/share/nginx/media/media:ro
     networks:
+      - default
       - proxy
-    expose:
-      - 8080
     labels:
       traefik.enable: "true"
       traefik.http.routers.phxfe-http.entrypoints: "web"
@@ -27,29 +28,17 @@ services:
     restart: always
     env_file:
       - prod.env
+    volumes:
+      - media:/app/media
     depends_on:
       mysql:
         condition: service_healthy
-      redis:
+      valkey:
         condition: service_healthy
       twilight:
         condition: service_started
-    networks:
-      - proxy
-      - default
     expose:
-      - 8000
-    labels:
-      traefik.enable: "true"
-      traefik.http.routers.phxbe-http.entrypoints: "web"
-      traefik.http.routers.phxbe-http.rule: "Host(`api.ussphoenixarchive.com`)"
-      traefik.http.routers.phxbe-http.middlewares: phxbe-redirect-https
-      traefik.http.middlewares.phxbe-redirect-https.redirectscheme.scheme: "https"
-      traefik.http.routers.phxbe.entrypoints: "websecure"
-      traefik.http.routers.phxbe.rule: "Host(`api.ussphoenixarchive.com`)"
-      traefik.http.routers.phxbe.tls: "true"
-      traefik.http.routers.phxbe.tls.certresolver: "le"
-      traefik.http.services.phxbe.loadbalancer.server.port: 8080
+      - 8080
 
   bot:
     tty: true
@@ -61,7 +50,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      redis:
+      valkey:
         condition: service_healthy
       twilight:
         condition: service_started
@@ -76,7 +65,7 @@ services:
     depends_on:
       mysql:
         condition: service_healthy
-      redis:
+      valkey:
         condition: service_healthy
 
   mysql:
@@ -96,11 +85,11 @@ services:
       timeout: 5s
       retries: 10
 
-  redis:
-    image: redis:7-alpine
+  valkey:
+    image: valkey/valkey:8
     restart: always
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      test: ["CMD-SHELL", "valkey-cli ping | grep PONG"]
       interval: 1s
       timeout: 5s
       retries: 10
@@ -113,6 +102,7 @@ services:
 
 volumes:
   mysql-data:
+  media:
 
 networks:
   proxy:

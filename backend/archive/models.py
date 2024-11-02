@@ -5,6 +5,8 @@ from django.db import models
 from django.db.models import Q
 from django.utils.timezone import make_aware
 
+from utils.models import make_upload_path
+
 
 class Tag(models.Model):
     """Categorization for Channels, such as server events"""
@@ -19,6 +21,9 @@ class Tag(models.Model):
 
     name = models.CharField(max_length=128)
     slug = models.SlugField(max_length=64, unique=True)
+    banner = models.ImageField(
+        upload_to=make_upload_path("banners"), null=True, blank=True
+    )
     tag_type = models.CharField(max_length=64, choices=TagType, default=TagType.EVENTS)
     description = models.TextField(null=True, blank=True)
     start_date = models.DateField(null=True, blank=True)
@@ -29,6 +34,17 @@ class Tag(models.Model):
 
     class Meta:
         ordering = ["-start_date", "name"]
+
+    def save(self, *args, **kwargs):
+        """Override save method in order to:
+
+        - Delete old banner image when banner file changes
+        """
+        if self.pk:
+            old_tag = Tag.objects.get(pk=self.pk)
+            if old_tag.banner.name != self.banner.name:
+                old_tag.banner.delete(save=False)
+        super(Tag, self).save(*args, **kwargs)
 
 
 class Channel(models.Model):

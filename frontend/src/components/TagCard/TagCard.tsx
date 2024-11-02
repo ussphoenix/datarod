@@ -34,6 +34,7 @@ function positionFromId(string: string): string {
 
 export default function TagCard(props: TagCardProps) {
   const { tag, adminView } = props;
+
   return (
     <div
       key={tag?.id}
@@ -41,9 +42,14 @@ export default function TagCard(props: TagCardProps) {
     >
       <div
         className={clsx(
-          "flex h-20 flex-col justify-end rounded-t-md bg-[url('/static/images/cardHero.jpg')] px-4 py-2",
-          positionFromId(tag?.id),
+          `flex h-20 flex-col justify-end rounded-t-md px-4 py-2`,
+          tag?.banner ? "bg-cover bg-top" : positionFromId(tag?.id),
         )}
+        style={{
+          backgroundImage: tag?.banner
+            ? `url('${constants.MEDIA_URL}/${tag?.banner}')`
+            : "url('/static/images/cardHero.jpg')",
+        }}
       >
         <h1 className="text-2xl font-bold drop-shadow-2xl">{tag?.name}</h1>
       </div>

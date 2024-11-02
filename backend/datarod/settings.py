@@ -35,13 +35,11 @@ ALLOWED_HOSTS = get_env(
     "ALLOWED_HOSTS", ["0.0.0.0", "localhost", "127.0.0.1"], is_list=True
 )
 CSRF_TRUSTED_ORIGINS = [
-    "https://api.ussphoenixarchive.com",
     "https://ussphoenixarchive.com",
 ]
 CORS_ALLOW_ALL_ORIGINS = get_env("CORS_ALLOW_ALL_ORIGINS", False, is_bool=True)
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [
-    "https://api.ussphoenixarchive.com",
     "https://ussphoenixarchive.com",
 ]
 
@@ -124,7 +122,7 @@ DATABASES = {
 CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
-        "LOCATION": "redis://redis:6379/1",
+        "LOCATION": "redis://valkey:6379/1",
     }
 }
 
@@ -164,7 +162,14 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_ROOT = BASE_DIR / "staticfiles"
-STATIC_URL = "static/"
+STATIC_URL = "backend/static/"
+
+
+# Media files (user uploaded files)
+# https://docs.djangoproject.com/en/5.0/topics/files/
+
+MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_URL = "media/"
 
 
 # Default primary key field type
@@ -207,12 +212,12 @@ LOGGING = {
 
 RQ_QUEUES = {
     "high": {
-        "HOST": "redis",
+        "HOST": "valkey",
         "PORT": 6379,
         "DB": 0,
     },
     "default": {
-        "HOST": "redis",
+        "HOST": "valkey",
         "PORT": 6379,
         "DB": 0,
     },

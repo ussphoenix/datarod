@@ -67,6 +67,7 @@ export interface TagGQLType {
   slug: string;
   name: string;
   tagType: TagType;
+  banner?: string;
   description?: string;
   startDate?: string;
   endDate?: string;

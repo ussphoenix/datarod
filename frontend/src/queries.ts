@@ -30,6 +30,7 @@ export const GET_TAGS = gql`
         node {
           id
           slug
+          banner
           tagType
           name
           description
@@ -47,6 +48,7 @@ export const GET_TAG = gql`
       id
       slug
       tagType
+      banner
       name
       description
       startDate
@@ -164,6 +166,8 @@ export const MUTATE_TAG = gql`
     $slug: String!
     $description: String
     $tagType: String!
+    $banner: Upload
+    $clearBanner: Boolean
     $startDate: Date
     $endDate: Date
   ) {
@@ -173,6 +177,8 @@ export const MUTATE_TAG = gql`
       slug: $slug
       description: $description
       tagType: $tagType
+      banner: $banner
+      clearBanner: $clearBanner
       startDate: $startDate
       endDate: $endDate
     ) {
@@ -180,6 +186,7 @@ export const MUTATE_TAG = gql`
         id
         slug
         tagType
+        banner
         name
         description
         startDate
