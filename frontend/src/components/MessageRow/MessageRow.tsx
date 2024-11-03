@@ -25,6 +25,47 @@ const parseDate = (datestring?: string): string | null => {
   return parsed?.toLocaleString();
 };
 
+const parseMessageContent = (
+  rawMessageContent?: DiscordMessage | null,
+): React.ReactNode => {
+  let content = rawMessageContent?.content;
+  if (!content) return "";
+
+  // Remove newline from start of message
+  content = content.replace(/^\n(.*?)/, "$1");
+
+  // Italic text (*text* or _text_)
+  content = content.replace(
+    /(\_|\*)(.*?)(\_|\*)/g,
+    '<span class="italic">$2</span>',
+  );
+
+  // Bold text (**text**)
+  content = content.replace(
+    /(\*\*)(.*?)(\*\*)/g,
+    '<span class="font-semibold">$2</span>',
+  );
+
+  // Code text (`text`)
+  content = content.replace(
+    /(\`)(.*?)(\`)/g,
+    '<span class="font-mono bg-slate-800 p-1 text-sm rounded-md">$2</span>',
+  );
+
+  // Strikethrough text (~~text~~)
+  content = content.replace(
+    /(\~\~)(.*?)(\~\~)/g,
+    '<span class="line-through">$2</span>',
+  );
+
+  return (
+    <div
+      className="whitespace-pre-line"
+      dangerouslySetInnerHTML={{ __html: content }}
+    ></div>
+  );
+};
+
 export default function MessageRow(props: MessageRowProps): React.JSX.Element {
   const { message } = props;
   const { me } = useMe();
@@ -124,7 +165,7 @@ export default function MessageRow(props: MessageRowProps): React.JSX.Element {
         </div>
 
         {/* Message Content Row */}
-        <div>{parseMessage(message?.rawMessage)?.content}</div>
+        {parseMessageContent(parseMessage(message?.rawMessage))}
       </div>
     </div>
   );
