@@ -1,6 +1,41 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+
+@theme {
+  /* Custom colors */
+  --color-lcarsYellow-100: #ffff99;
+  --color-lcarsYellow-200: #ffcc66;
+  --color-lcarsYellow-300: #ffcc66;
+  --color-lcarsYellow-400: #bbaa55;
+
+  --color-lcarsOrange-100: #ff9900;
+  --color-lcarsOrange-200: #ff9933;
+  --color-lcarsOrange-300: #bb6622;
+  --color-lcarsOrange-400: #bb4411;
+
+  --color-lcarsPurple-100: #9999ff;
+  --color-lcarsPurple-200: #9999cc;
+  --color-lcarsPurple-300: #9977aa;
+  --color-lcarsPurple-400: #774466;
+  --color-lcarsPurple-500: #664466;
+
+  --color-lcarsPink-100: #cc6699;
+  --color-lcarsPink-200: #cc99cc;
+
+  --color-lcarsBlue-100: #ccddff;
+  --color-lcarsBlue-200: #99ccff;
+  --color-lcarsBlue-300: #5599ff;
+  --color-lcarsBlue-400: #6688cc;
+  --color-lcarsBlue-500: #3366ff;
+  --color-lcarsBlue-600: #3366cc;
+  --color-lcarsBlue-700: #0011ee;
+  --color-lcarsBlue-800: #000088;
+
+  --color-lcarsAqua: #006699;
+  --color-lcarsRed: #882211;
+
+  /* Theme font */
+  --font-title: FinalFrontierOldStyle, sans-serif;
+}
 
 /* Custom fonts */
 @layer base {

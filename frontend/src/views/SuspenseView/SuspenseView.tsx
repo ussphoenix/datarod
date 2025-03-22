@@ -27,7 +27,7 @@ export default function SuspenseView(): React.JSX.Element {
         </div>
 
         {/* Static mobile header  */}
-        <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-slate-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden">
+        <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-slate-900 px-4 py-4 shadow-xs sm:px-6 lg:hidden">
           <span className="font-title text-3xl tracking-wide text-white">
             <Skeleton />
           </span>

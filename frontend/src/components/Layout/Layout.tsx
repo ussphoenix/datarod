@@ -49,16 +49,16 @@ export default function Layout(props: LayoutProps) {
         >
           <DialogBackdrop
             transition
-            className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-[closed]:opacity-0"
+            className="fixed inset-0 bg-gray-900/80 transition-opacity duration-300 ease-linear data-closed:opacity-0"
           />
 
           <div className="fixed inset-0 flex">
             <DialogPanel
               transition
-              className="relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-[closed]:-translate-x-full"
+              className="relative mr-16 flex w-full max-w-xs flex-1 transform transition duration-300 ease-in-out data-closed:-translate-x-full"
             >
               <TransitionChild>
-                <div className="absolute left-full top-0 flex w-16 justify-center pt-5 duration-300 ease-in-out data-[closed]:opacity-0">
+                <div className="absolute top-0 left-full flex w-16 justify-center pt-5 duration-300 ease-in-out data-closed:opacity-0">
                   <button
                     type="button"
                     onClick={() => setSidebarOpen(false)}
@@ -96,8 +96,8 @@ export default function Layout(props: LayoutProps) {
                                 clsx(
                                   isActive
                                     ? "bg-lcarsPurple-500 text-white"
-                                    : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
-                                  "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
+                                    : "hover:bg-lcarsOrange-200 text-gray-400 hover:text-white",
+                                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
                                 )
                               }
                             >
@@ -117,8 +117,8 @@ export default function Layout(props: LayoutProps) {
                                 clsx(
                                   isActive
                                     ? "bg-lcarsPurple-500 text-white"
-                                    : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
-                                  "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
+                                    : "hover:bg-lcarsOrange-200 text-gray-400 hover:text-white",
+                                  "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
                                 )
                               }
                             >
@@ -137,7 +137,7 @@ export default function Layout(props: LayoutProps) {
                       <li className="mt-auto">
                         <NavLink
                           to={me?.logoutUrl}
-                          className="rounded-md bg-lcarsBlue-600 px-4 py-2 text-sm hover:bg-lcarsPurple-100"
+                          className="bg-lcarsBlue-600 hover:bg-lcarsPurple-100 rounded-md px-4 py-2 text-sm"
                         >
                           Logout
                         </NavLink>
@@ -176,8 +176,8 @@ export default function Layout(props: LayoutProps) {
                             clsx(
                               isActive
                                 ? "bg-lcarsPurple-500 text-white"
-                                : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
-                              "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
+                                : "hover:bg-lcarsOrange-200 text-gray-400 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
                             )
                           }
                         >
@@ -201,18 +201,18 @@ export default function Layout(props: LayoutProps) {
                         className="hidden group-hover:block"
                         onClick={() => clearChannels()}
                       >
-                        <XMarkIcon className="size-5 text-white hover:text-lcarsPink-100" />
+                        <XMarkIcon className="hover:text-lcarsPink-100 size-5 text-white" />
                       </button>
                     </li>
                     <li className="text-gray-400">
                       <ul>
                         {!channelHistory.length && (
-                          <li className="ml-2 mt-1 text-gray-500">
+                          <li className="mt-1 ml-2 text-gray-500">
                             No recent channels (yet!)
                           </li>
                         )}
                         {channelHistory?.map((channel) => (
-                          <li key={channel?.id} className="ml-2 mt-1">
+                          <li key={channel?.id} className="mt-1 ml-2">
                             <NavLink
                               className="hover:text-lcarsBlue-300 hover:underline"
                               to={`${constants.ROUTES.CHANNEL}/${channel?.id}`}
@@ -237,8 +237,8 @@ export default function Layout(props: LayoutProps) {
                             clsx(
                               isActive
                                 ? "bg-lcarsPurple-500 text-white"
-                                : "text-gray-400 hover:bg-lcarsOrange-200 hover:text-white",
-                              "group flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6",
+                                : "hover:bg-lcarsOrange-200 text-gray-400 hover:text-white",
+                              "group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold",
                             )
                           }
                         >
@@ -254,7 +254,7 @@ export default function Layout(props: LayoutProps) {
                   <li className="mt-auto">
                     <NavLink
                       to={me?.logoutUrl}
-                      className="rounded-md bg-lcarsBlue-600 px-4 py-2 text-sm hover:bg-lcarsPurple-100"
+                      className="bg-lcarsBlue-600 hover:bg-lcarsPurple-100 rounded-md px-4 py-2 text-sm"
                     >
                       Logout
                     </NavLink>
@@ -266,7 +266,7 @@ export default function Layout(props: LayoutProps) {
         </div>
 
         {/* Static mobile header  */}
-        <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-slate-900 px-4 py-4 shadow-sm sm:px-6 lg:hidden">
+        <div className="sticky top-0 z-40 flex items-center gap-x-6 bg-slate-900 px-4 py-4 shadow-xs sm:px-6 lg:hidden">
           <button
             type="button"
             onClick={() => setSidebarOpen(true)}

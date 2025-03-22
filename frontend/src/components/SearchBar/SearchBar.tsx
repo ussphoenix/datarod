@@ -61,11 +61,11 @@ export default function SearchBar(): React.JSX.Element {
       {/* Search Box */}
       <div>
         <label htmlFor="searchBox" className="relative">
-          <MagnifyingGlassIcon className="absolute right-2 top-0 size-6 text-slate-600" />
+          <MagnifyingGlassIcon className="absolute top-0 right-2 size-6 text-slate-600" />
           <input
             name="searchBox"
             id="searchBox"
-            className="m-0 w-full rounded-md border border-slate-700 bg-slate-900 py-2 pl-2 pr-8 focus:border-slate-300 focus:outline-none"
+            className="m-0 w-full rounded-md border border-slate-700 bg-slate-900 py-2 pr-8 pl-2 focus:border-slate-300 focus:outline-hidden"
             placeholder="Search"
             value={searchTerm}
             onChange={handleChange}
@@ -84,17 +84,17 @@ export default function SearchBar(): React.JSX.Element {
           modalSearchBox.current?.focus();
         }}
       >
-        <div className="fixed inset-0 bg-neutral-900 bg-opacity-85 transition-opacity" />
+        <div className="bg-opacity-85 fixed inset-0 bg-neutral-900 transition-opacity" />
         <div className="fixed inset-0 z-40 w-screen overflow-y-auto">
           <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <DialogPanel className="relative transform overflow-hidden rounded-lg bg-slate-900 text-left shadow-xl transition-all sm:w-full sm:max-w-lg">
               <div>
                 <label htmlFor="modalSearchBox" className="relative">
-                  <MagnifyingGlassIcon className="absolute right-2 top-0 size-6 text-slate-500" />
+                  <MagnifyingGlassIcon className="absolute top-0 right-2 size-6 text-slate-500" />
                   <input
                     name="modalSearchbox"
                     id="modalSearchBox"
-                    className="m-0 w-full bg-slate-700 py-4 pl-4 pr-10 focus:outline-none"
+                    className="m-0 w-full bg-slate-700 py-4 pr-10 pl-4 focus:outline-hidden"
                     placeholder="Search"
                     value={searchTerm}
                     onChange={handleChange}
