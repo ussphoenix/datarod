@@ -29,10 +29,10 @@
     "importOrderSortSpecifiers": true
   },
   "dependencies": {
-    "@apollo/client": "^3.13.8",
+    "@apollo/client": "^4.0.7",
     "@headlessui/react": "^2.2.3",
     "@heroicons/react": "^2.2.0",
-    "apollo-upload-client": "^18.0.1",
+    "apollo-upload-client": "^19.0.0",
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
     "formik": "^2.4.6",
@@ -51,7 +51,7 @@
     "@types/apollo-upload-client": "^18.0.0",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
-    "@vitejs/plugin-react": "^4.4.1",
+    "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-typescript": "^18.0.0",
