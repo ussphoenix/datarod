@@ -29,10 +29,10 @@
     "importOrderSortSpecifiers": true
   },
   "dependencies": {
-    "@apollo/client": "^4.0.7",
+    "@apollo/client": "^3.14.0",
     "@headlessui/react": "^2.2.3",
     "@heroicons/react": "^2.2.0",
-    "apollo-upload-client": "^19.0.0",
+    "apollo-upload-client": "^18.0.1",
     "axios": "^1.9.0",
     "clsx": "^2.1.1",
     "formik": "^2.4.6",
