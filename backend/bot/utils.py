@@ -30,7 +30,7 @@ def send_discord_message(user_id: str, message_type: MessageType, message: str):
 
     # Create a DM with a user
     try:
-        url = urljoin(settings.DISCORD_BASE_URL, f"users/@me/channels")
+        url = urljoin(settings.DISCORD_BASE_URL, "users/@me/channels")
         payload = {"recipient_id": user_id}
         response = requests.post(url, headers=discord_headers, json=payload)
         response.raise_for_status()

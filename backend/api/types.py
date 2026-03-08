@@ -153,7 +153,7 @@ class NicknameMutation(Mutation):
 
     @login_required
     @staff_required
-    def mutate(root, info, id, name=None, avatar=None):
+    def mutate(root, info, id, name=None, avatar=None, color=None):
         nickname = Nickname.objects.get(pk=from_global_id(id).id)
         if name:
             nickname.name = name
@@ -174,7 +174,6 @@ class MessageType(DjangoObjectType):
             "channel": ["exact"],
             "channel__name": ["exact", "icontains", "istartswith"],
             "channel__discord_id": ["exact"],
-            "channel__name": ["exact", "icontains", "istartswith"],
             "channel__tag__name": ["exact", "icontains", "istartswith"],
             "channel__tag__slug": ["exact"],
             "channel__tag__tag_type": ["exact"],

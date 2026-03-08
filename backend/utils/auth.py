@@ -1,5 +1,5 @@
+import requests
 from social_core.backends.discord import DiscordOAuth2
-from social_core.backends.oauth import BaseOAuth2
 from social_core.exceptions import AuthForbidden
 
 from django.conf import settings
@@ -24,7 +24,7 @@ class Discord(DiscordOAuth2):
             response = self.get_json(url, headers=auth_header)
         except requests.exceptions.HTTPError:
             # If user not in guild, stop right here
-            raise AuthForbidden(backend)
+            raise AuthForbidden
         else:
             guild_data = {"roles": response.get("roles", [])}
         data["guild"] = guild_data

@@ -1,6 +1,6 @@
 import datetime
 import logging
-from typing import List, Tuple
+from typing import Tuple
 from urllib.parse import urljoin
 
 import requests
@@ -150,9 +150,7 @@ def update_color_from_roles(nickname: Nickname):
             # Sort by position key, filter out color-less roles and roles with users
             # that are not displayed independently from other roles
             data.sort(key=lambda x: x["position"], reverse=True)
-            data = list(
-                filter(lambda x: all([x["color"] > 0, x["hoist"] == True]), data)
-            )
+            data = list(filter(lambda x: all([x["color"] > 0, x["hoist"]]), data))
             cache.set("guild-roles", data, 120)
             guild_roles = data
         except Exception as e:
@@ -215,7 +213,7 @@ def archive_discord_channel(
         send_discord_message(
             user_id=user_id,
             message_type=MessageType.ERROR,
-            message=f"Sorry, something went wrong with your archive request. Please have engineering go take a look.",
+            message="Sorry, something went wrong with your archive request. Please have engineering go take a look.",
         )
         logger.exception(e)
         return
@@ -233,7 +231,7 @@ def archive_discord_channel(
         send_discord_message(
             user_id=user_id,
             message_type=MessageType.ERROR,
-            message=f"Sorry, something went wrong with your archive request. Please have engineering go take a look.",
+            message="Sorry, something went wrong with your archive request. Please have engineering go take a look.",
         )
         logger.exception(e)
         return

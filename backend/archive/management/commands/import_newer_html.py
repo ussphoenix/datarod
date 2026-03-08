@@ -1,10 +1,7 @@
 import datetime
-import json
-import sys
 
 from bs4 import BeautifulSoup
 
-from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils.timezone import make_aware
 

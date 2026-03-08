@@ -1,9 +1,4 @@
-import datetime
-from typing import Optional
-
 from django.db import models
-from django.db.models import Q
-from django.utils.timezone import make_aware
 
 from utils.models import make_upload_path
 

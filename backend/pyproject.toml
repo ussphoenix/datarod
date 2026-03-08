@@ -1,38 +1,88 @@
-[tool.poetry]
+[project]
 name = "datarod"
-version = "0.1.0"
+version = "1.0.0"
 description = "Phoenix Archive (datarod)"
-authors = ["Winston Astrachan <winston.astrachan@gmail.com>"]
+authors = ["Winston Astrachan"]
 readme = "../README.md"
-package-mode = false
+requires-python = "==3.13.*"
 
-[tool.poetry.dependencies]
-python = "^3.12"
-django = "^5.0.7"
-gunicorn = "^23.0.0"
-discord-py = "^2.4.0"
-mysqlclient = "^2.2.4"
-django-rq = "^3.0.0"
-requests = "^2.32.3"
-graphene-django = "^3.2.2"
-django-filter = "^24.2"
-social-auth-app-django = "^5.4.2"
-django-cors-headers = "^4.4.0"
-beautifulsoup4 = "^4.12.3"
-pillow = "^11.0.0"
-whitenoise = "^6.8.2"
-graphene-file-upload = "^1.3.0"
+dependencies = [
+    "django<6.0.0",
+    "gunicorn",
+    "discord-py",
+    "mysqlclient",
+    "django-rq",
+    "requests",
+    "graphene-django==3.2.2",
+    "django-filter",
+    "social-auth-app-django",
+    "django-cors-headers",
+    "beautifulsoup4",
+    "pillow",
+    "whitenoise",
+    "graphene-file-upload",
+]
 
-[tool.poetry.group.dev.dependencies]
-black = "^24.4.2"
-isort = "^5.13.2"
+[dependency-groups]
+dev = [
+    "ruff",
+    "ty",
+]
 
-[tool.isort]
-profile = "black"
-default_section = "THIRDPARTY"
-known_django = "django"
-sections = ["FUTURE", "STDLIB", "THIRDPARTY", "DJANGO", "FIRSTPARTY", "LOCALFOLDER"]
+[tool.ruff]
+line-length = 88
+indent-width = 4
+target-version = "py313"
+exclude = [
+    ".venv/",
+]
 
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[tool.ruff.lint]
+select = [
+    "E", # pycodestyle
+    "F", # pyflakes
+    "I", # isort
+]
+ignore = [
+    "F403", # unable to detect undefined names (import *)
+    "E501", # line too long
+    "E741", # ambiguous variable name
+    "E731", # do not assign a lambda expression, use a def
+]
+fixable = [
+    "I", # isort
+    "E722", # don't use bare except
+    "F401", # unused imports
+    "F841", # variable assigned but not used
+    "E711", # comparison with None should be 'is None'
+    "F541", # f-string without any placeholders
+    "E712", # avoid equality comparisons with True
+]
+
+# [tool.ruff.lint.per-file-ignores]
+# "__init__.py" = [
+#     "F401", # unused imports
+# ]
+
+[tool.ruff.lint.isort]
+order-by-type = true
+combine-as-imports = true
+from-first = false
+default-section = "third-party"
+section-order = [
+    "future",
+    "standard-library",
+    "third-party",
+    "django",
+    "first-party",
+    "local-folder",
+]
+
+[tool.ruff.lint.isort.sections]
+"django" = ["django"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"

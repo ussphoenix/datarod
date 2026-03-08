@@ -1,23 +1,26 @@
-FROM python:3.12-bookworm
+FROM python:3.13-trixie
 
 LABEL org.opencontainers.image.title="Phoenix Archive (datrod)"
 LABEL org.opencontainers.image.description="Phoenix Archive Backend Service"
 LABEL org.opencontainers.image.authors="Winston Astrachan"
 
+ENV PYTHONUNBUFFERED=1 \
+    UV_PROJECT_ENVIRONMENT="/usr/local" \
+    UV_NO_MANAGED_PYTHON="1"
+
 # Install build dependencies
 RUN <<EOT
     set -eux
-    pip install -U poetry
+    pip install -U uv
 EOT
 
 # Install app dependencies before application for layer cache
 COPY pyproject.toml /app/
-COPY poetry.lock /app/
+COPY uv.lock /app/
 RUN <<EOT
     set -eux
     cd /app
-    poetry config virtualenvs.create false
-    poetry install
+    uv sync --locked
 EOT
 
 COPY . /app
