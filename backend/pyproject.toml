@@ -29,6 +29,9 @@ dev = [
     "ty",
 ]
 
+[tool.uv]
+exclude-newer = "7 days"
+
 [tool.ruff]
 line-length = 88
 indent-width = 4
@@ -58,11 +61,6 @@ fixable = [
     "F541", # f-string without any placeholders
     "E712", # avoid equality comparisons with True
 ]
-
-# [tool.ruff.lint.per-file-ignores]
-# "__init__.py" = [
-#     "F401", # unused imports
-# ]
 
 [tool.ruff.lint.isort]
 order-by-type = true
