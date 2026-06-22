@@ -1,0 +1,13 @@
+# Dependencies are installed inside the image (see Dockerfile). Excluding the
+# local node_modules keeps a stale/host-built tree from shadowing the clean
+# `npm install` — `COPY . /app` would otherwise overwrite the image's deps.
+node_modules
+
+# Build output and local artifacts
+dist
+*.log
+
+# VCS and editor cruft
+.git
+.gitignore
+.DS_Store
