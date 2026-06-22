@@ -1,6 +1,18 @@
 import { gql } from "@apollo/client";
+import type { TypedDocumentNode } from "@apollo/client";
 
-export const GET_ME = gql`
+import type {
+  ChannelGQLType,
+  MeGQLType,
+  MessageGQLType,
+  NicknameGQLType,
+  RelayEdges,
+  RelaySingle,
+  TagGQLType,
+  TagsChannelsSearchGQLType,
+} from "@types";
+
+export const GET_ME: TypedDocumentNode<{ me: MeGQLType }, Record<string, never>> = gql`
   query GetMe {
     me {
       username
@@ -12,7 +24,15 @@ export const GET_ME = gql`
   }
 `;
 
-export const GET_TAGS = gql`
+export const GET_TAGS: TypedDocumentNode<
+  RelayEdges<TagGQLType>,
+  {
+    tagType?: string | null;
+    slug?: string | null;
+    first?: number;
+    after?: string | null;
+  }
+> = gql`
   query GetTags(
     $tagType: ArchiveTagTagTypeChoices
     $slug: String = null
@@ -42,7 +62,10 @@ export const GET_TAGS = gql`
   }
 `;
 
-export const GET_TAG = gql`
+export const GET_TAG: TypedDocumentNode<
+  RelaySingle<TagGQLType>,
+  { id?: string }
+> = gql`
   query GetTag($id: ID!) {
     tag(id: $id) {
       id
@@ -57,7 +80,16 @@ export const GET_TAG = gql`
   }
 `;
 
-export const GET_CHANNELS = gql`
+export const GET_CHANNELS: TypedDocumentNode<
+  RelayEdges<ChannelGQLType>,
+  {
+    tag?: string;
+    tagType?: string | null;
+    tagSlug?: string | null;
+    first?: number;
+    after?: string | null;
+  }
+> = gql`
   query GetChannels(
     $tag: ID = null
     $tagType: ArchiveTagTagTypeChoices = null
@@ -95,7 +127,10 @@ export const GET_CHANNELS = gql`
   }
 `;
 
-export const GET_MESSAGES = gql`
+export const GET_MESSAGES: TypedDocumentNode<
+  RelayEdges<MessageGQLType> & { channel: ChannelGQLType },
+  { channel?: string; first?: number; after?: string | null }
+> = gql`
   query GetMessages($channel: ID!, $first: Int = 100, $after: String = null) {
     channel(id: $channel) {
       id
@@ -131,7 +166,10 @@ export const GET_MESSAGES = gql`
   }
 `;
 
-export const SEARCH_TAGS_CHANNELS = gql`
+export const SEARCH_TAGS_CHANNELS: TypedDocumentNode<
+  TagsChannelsSearchGQLType,
+  { term?: string | null; first?: number }
+> = gql`
   query SearchTagsAndChannels($term: String, $first: Int = 5) {
     tags(name_Icontains: $term, first: $first) {
       pageInfo {
@@ -159,7 +197,20 @@ export const SEARCH_TAGS_CHANNELS = gql`
   }
 `;
 
-export const MUTATE_TAG = gql`
+export const MUTATE_TAG: TypedDocumentNode<
+  { tag: { tag: TagGQLType } },
+  {
+    id?: string;
+    name?: string;
+    slug?: string;
+    description?: string;
+    tagType?: string;
+    banner?: File | null;
+    clearBanner?: boolean;
+    startDate?: string | null;
+    endDate?: string | null;
+  }
+> = gql`
   mutation MutateTag(
     $id: ID
     $name: String!
@@ -196,7 +247,10 @@ export const MUTATE_TAG = gql`
   }
 `;
 
-export const MUTATE_NICKNAME = gql`
+export const MUTATE_NICKNAME: TypedDocumentNode<
+  { nickname: { nickname: NicknameGQLType } },
+  { id?: string; name?: string; avatar?: string }
+> = gql`
   mutation MutateNickname($id: ID!, $name: String, $avatar: String) {
     nickname(id: $id, name: $name, avatar: $avatar) {
       nickname {

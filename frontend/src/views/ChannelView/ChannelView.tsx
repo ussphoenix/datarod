@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import {
   type Breadcrumb,
   Breadcrumbs,
@@ -14,26 +14,23 @@ import constants from "@constants";
 import { HashtagIcon } from "@heroicons/react/20/solid";
 import { useRecentChannels } from "@providers/RecentChannelsProvider";
 import { GET_MESSAGES } from "@queries";
-import type { ChannelGQLType, MessageGQLType, RelayEdges } from "@types";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
-
-type ChannelQuery = RelayEdges<MessageGQLType> & { channel: ChannelGQLType };
 
 export default function ChannelView(): React.JSX.Element {
   const { channelId } = useParams();
   const { addChannel } = useRecentChannels();
   const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
-  const { data, loading, error, fetchMore } = useQuery<ChannelQuery>(
-    GET_MESSAGES,
-    {
-      variables: { channel: channelId },
-      onCompleted: (data) => {
-        addChannel({ name: data?.channel?.name, id: data?.channel?.id });
-      },
-    },
-  );
+  const { data, loading, error, fetchMore } = useQuery(GET_MESSAGES, {
+    variables: { channel: channelId },
+  });
+
+  useEffect(() => {
+    if (data?.channel) {
+      addChannel({ name: data.channel.name, id: data.channel.id });
+    }
+  }, [data?.channel?.id]);
 
   // Generate breadcrumb trail based on tag type
   const breadcrumbs: Breadcrumb[] = [

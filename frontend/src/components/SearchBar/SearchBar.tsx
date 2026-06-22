@@ -4,7 +4,6 @@ import { useLazyQuery } from "@apollo/client/react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { SEARCH_TAGS_CHANNELS } from "@queries";
-import type { TagsChannelsSearchGQLType } from "@types";
 import { useLocation } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -17,12 +16,18 @@ export default function SearchBar(): React.JSX.Element {
   const [searchTerm, setSearchTerm] = useState<string>("");
   const modalSearchBox = useRef<HTMLInputElement | null>(null);
 
-  const [getResults, { loading, data }] =
-    useLazyQuery<TagsChannelsSearchGQLType>(SEARCH_TAGS_CHANNELS, {
-      variables: { term: null }, // variables should be overridden by lazy query invocations
-      onError: () => toast.error("Unable to load search results"),
+  const [getResults, { loading, data, error }] = useLazyQuery(
+    SEARCH_TAGS_CHANNELS,
+    {
       fetchPolicy: "no-cache",
-    });
+    },
+  );
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Unable to load search results");
+    }
+  }, [error]);
 
   const handleChange: React.ChangeEventHandler<HTMLInputElement> = (
     event,

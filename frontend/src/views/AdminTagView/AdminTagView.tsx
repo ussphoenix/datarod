@@ -1,11 +1,10 @@
 import { useRef } from "react";
 
-import { useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client/react";
 import { Breadcrumbs } from "@components";
 import constants from "@constants";
 import { TagIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { GET_TAG, MUTATE_TAG } from "@queries";
-import type { RelaySingle, TagGQLType } from "@types";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -18,7 +17,7 @@ export default function AdminTagView(): React.JSX.Element {
   const { tagId } = useParams();
   const navigate = useNavigate();
   const uploadField = useRef<HTMLInputElement | null>(null);
-  const { data, loading } = useQuery<RelaySingle<TagGQLType>>(GET_TAG, {
+  const { data, loading } = useQuery(GET_TAG, {
     skip: !tagId,
     variables: {
       id: tagId,

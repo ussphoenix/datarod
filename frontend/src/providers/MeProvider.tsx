@@ -1,6 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import { GET_ME } from "@queries";
 import type { MeGQLType } from "@types";
 import { toast } from "react-toastify";
@@ -20,14 +20,19 @@ export const MeContext = createContext<MeContextInterface>({
 export function MeProvider(props: React.PropsWithChildren): React.JSX.Element {
   const { children } = props;
   const [me, setMe] = useState<MeGQLType | null>(null);
-  const { loading, error } = useQuery<{ me: MeGQLType }>(GET_ME, {
-    onCompleted: (data) => {
-      setMe(data?.me);
-    },
-    onError: () => {
+  const { loading, error, data } = useQuery(GET_ME);
+
+  useEffect(() => {
+    if (data) {
+      setMe(data.me);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (error) {
       toast.error("An error occurred loading your profile");
-    },
-  });
+    }
+  }, [error]);
 
   return (
     <MeContext.Provider

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import { useQuery } from "@apollo/client";
+import { useQuery } from "@apollo/client/react";
 import {
   type Breadcrumb,
   Breadcrumbs,
@@ -13,12 +13,6 @@ import {
 import constants from "@constants";
 import { HashtagIcon } from "@heroicons/react/20/solid";
 import { GET_CHANNELS, GET_TAG } from "@queries";
-import type {
-  ChannelGQLType,
-  RelayEdges,
-  RelaySingle,
-  TagGQLType,
-} from "@types";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
@@ -27,9 +21,7 @@ export default function ChannelsView(): React.JSX.Element {
   const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { tagId } = useParams();
 
-  const { data: tagData, loading: tagLoading } = useQuery<
-    RelaySingle<TagGQLType>
-  >(GET_TAG, {
+  const { data: tagData, loading: tagLoading } = useQuery(GET_TAG, {
     variables: { id: tagId },
     fetchPolicy: "network-only",
     skip: !tagId,
@@ -40,7 +32,7 @@ export default function ChannelsView(): React.JSX.Element {
     loading: channelLoading,
     fetchMore,
     error,
-  } = useQuery<RelayEdges<ChannelGQLType>>(GET_CHANNELS, {
+  } = useQuery(GET_CHANNELS, {
     variables: {
       tag: tagId,
     },

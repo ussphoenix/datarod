@@ -1,7 +1,8 @@
-import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ApolloClient, InMemoryCache } from "@apollo/client";
+import { ApolloProvider } from "@apollo/client/react";
 import { relayStylePagination } from "@apollo/client/utilities";
 import constants from "@constants";
-import createUploadLink from "apollo-upload-client/createUploadLink.mjs";
+import UploadHttpLink from "apollo-upload-client/UploadHttpLink.mjs";
 
 /**
  * ClientProvider wraps ApolloProvider to provide an
@@ -13,7 +14,7 @@ export function ClientProvider(
   const { children } = props;
 
   const client = new ApolloClient({
-    link: createUploadLink({
+    link: new UploadHttpLink({
       uri: constants.BACKEND_URL,
       credentials: "include",
     }),
