@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import { useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client/react";
 import { PencilIcon } from "@heroicons/react/24/outline";
 import { useMe } from "@providers/MeProvider";
 import { MUTATE_NICKNAME } from "@queries";

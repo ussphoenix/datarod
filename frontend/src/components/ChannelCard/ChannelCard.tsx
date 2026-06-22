@@ -1,5 +1,5 @@
 import constants from "@constants";
-import { ChannelGQLType } from "@types";
+import type { ChannelGQLType } from "@types";
 import { NavLink } from "react-router-dom";
 
 interface ChannelCardProps {

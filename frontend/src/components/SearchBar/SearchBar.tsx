@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 
-import { useLazyQuery } from "@apollo/client";
+import { useLazyQuery } from "@apollo/client/react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { SEARCH_TAGS_CHANNELS } from "@queries";

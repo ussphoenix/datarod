@@ -1,5 +1,5 @@
 import constants from "@constants";
-import { TagGQLType } from "@types";
+import type { TagGQLType } from "@types";
 import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 
