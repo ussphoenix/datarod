@@ -8,6 +8,7 @@ from django_rq import job
 
 from django.conf import settings
 from django.core.cache import cache
+from django.utils.text import slugify
 
 from archive.models import Channel, Message, Nickname, Tag
 from bot.utils import MessageType, discord_headers, send_discord_message
@@ -37,8 +38,8 @@ def archive_channel(channel_id: str, tag: Tag) -> Tuple[Channel, bool]:
 
 
 def archive_messages(
-    channel: Channel, before: str, after: str = None
-) -> Tuple[str, bool]:
+    channel: Channel, before: str, after: str | None = None
+) -> Tuple[str | None, bool]:
     """Fetch messages from Discord's API and persist to database
     This method will fetch and archive messages in groups of 100, and will return True
     if there are more messages  (and this method should be run again)
@@ -66,7 +67,20 @@ def archive_messages(
         )
         if not created:
             continue  # Don't re-archive a message we have previously archived
-        nickname = archive_user(user_id=message_details.get("author", {}).get("id"))
+
+        author_details = message_details.get("author", {})
+
+        # Generate a nickname from message details if the author was a webhook
+        if message_details.get("webhook_id"):
+            nickname = archive_webhook_user(
+                username=author_details.get("username"),
+                webhook_id=message_details.get("webhook_id"),
+                avatar_id=author_details.get("avatar"),
+            )
+        # Archive full user if the author was not a webhook post
+        else:
+            nickname = archive_user(user_id=author_details.get("id"))
+
         if nickname:
             message.nickname = nickname
         message.timestamp = datetime.datetime.fromisoformat(
@@ -80,7 +94,38 @@ def archive_messages(
         return None, False
 
 
-def archive_user(user_id: str) -> Nickname:
+def archive_webhook_user(
+    webhook_id: str, username: str, avatar_id: str
+) -> Nickname | None:
+    """When messages are sent via a webhook they won't have profiles that can be
+    fetched from the Discord API. This method will archive the username and avatar
+    from the message payload instead of fetching from the Discord API.
+
+    Args:
+        webhook_id (str): Discord webhook ID
+        username (str): username
+        avatar_id (str): avatar ID
+    """
+    if nickname := cache.get(f"user-nickname-{webhook_id}-{slugify(username)}"):
+        return nickname
+
+    try:
+        # Merge the webhook ID and avatar ID to store as the avatar data
+        # (The path to an avatar is https://cdn.discordapp.com/avatars/<USER_ID>/<AVATAR_ID>.webp)
+        avatar = f"{webhook_id}/{avatar_id}"
+
+        nickname = Nickname.get_or_create_with_author(
+            name=username, avatar=avatar, discord_id=webhook_id
+        )
+        cache.set(f"user-nickname-{webhook_id}", nickname, 120)
+    except Exception as e:
+        logger.exception(e)
+        return
+
+    return nickname
+
+
+def archive_user(user_id: str) -> Nickname | None:
     """Fetch a member profile from the Discord API, and create an Identity
     for each unique combination of a user ID and nickname.
     Cache the result for a short time as this job may be called several
@@ -184,7 +229,11 @@ def update_color_from_roles(nickname: Nickname):
 
 @job
 def archive_discord_channel(
-    channel_id: str, tag_slug: str, user_id: str, after: str = None, before: str = None
+    channel_id: str,
+    tag_slug: str,
+    user_id: str,
+    after: str | None = None,
+    before: str | None = None,
 ):
     """Fetch messages from Discord's API and persist to database
     This is a long running job and is expected to be run in rq
