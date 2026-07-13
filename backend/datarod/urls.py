@@ -16,13 +16,16 @@ Including another URLconf
 """
 
 from graphene_file_upload.django import FileUploadGraphQLView
+from social_core.actions import do_auth
+from social_django.utils import psa
 
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.auth import logout
+from django.contrib.auth import REDIRECT_FIELD_NAME, logout
 from django.shortcuts import redirect
 from django.urls import include, path
+from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_exempt
 
 from api.schema import schema
@@ -33,11 +36,21 @@ def logout_view(request):
     return redirect(settings.LOGOUT_URL)
 
 
+# social-auth-app-django 6.x makes its login-begin view POST-only
+# re-expose it as GET-capable so our SPA can start OAuth with a plain redirect
+@never_cache
+@psa("social:complete")
+def social_begin(request, backend):
+    return do_auth(request.backend, redirect_name=REDIRECT_FIELD_NAME)
+
+
 urlpatterns = [
     path(
         "backend/",
         include(
             [
+                # override social-auth's POST-only view with a GET-capable one
+                path("login/<str:backend>/", social_begin, name="social_begin"),
                 path("", include("social_django.urls", namespace="social")),
                 path("logout", logout_view, name="logout"),
                 path("admin/", admin.site.urls),

@@ -137,6 +137,7 @@ export default function Layout(props: LayoutProps) {
                       <li className="mt-auto">
                         <NavLink
                           to={me?.logoutUrl}
+                          reloadDocument
                           className="bg-lcarsBlue-600 hover:bg-lcarsPurple-100 rounded-md px-4 py-2 text-sm"
                         >
                           Logout
@@ -254,6 +255,7 @@ export default function Layout(props: LayoutProps) {
                   <li className="mt-auto">
                     <NavLink
                       to={me?.logoutUrl}
+                      reloadDocument
                       className="bg-lcarsBlue-600 hover:bg-lcarsPurple-100 rounded-md px-4 py-2 text-sm"
                     >
                       Logout

@@ -32,6 +32,7 @@ DEBUG = get_env("DEBUG", False, is_bool=True)
 ALLOWED_HOSTS = get_env(
     "ALLOWED_HOSTS", ["0.0.0.0", "localhost", "127.0.0.1"], is_list=True
 )
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 CSRF_TRUSTED_ORIGINS = [
     "https://ussphoenixarchive.com",
 ]
