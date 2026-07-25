@@ -22,7 +22,7 @@ export default function AuthRequired(
     );
   }
 
-  if (!!me) {
+  if (me) {
     if (!me?.isAuthenticated && me?.loginUrl) {
       // user is unauthenticated, redirect to login
       window.location.replace(me.loginUrl);

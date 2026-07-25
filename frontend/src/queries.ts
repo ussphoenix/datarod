@@ -1,6 +1,5 @@
-import { gql } from "@apollo/client";
 import type { TypedDocumentNode } from "@apollo/client";
-
+import { gql } from "@apollo/client";
 import type {
   ChannelGQLType,
   MeGQLType,
@@ -12,7 +11,10 @@ import type {
   TagsChannelsSearchGQLType,
 } from "@types";
 
-export const GET_ME: TypedDocumentNode<{ me: MeGQLType }, Record<string, never>> = gql`
+export const GET_ME: TypedDocumentNode<
+  { me: MeGQLType },
+  Record<string, never>
+> = gql`
   query GetMe {
     me {
       username

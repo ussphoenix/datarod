@@ -6,15 +6,6 @@ import clsx from "clsx";
 export default function ScrollToTop(): React.JSX.Element {
   const [visible, setVisible] = useState<boolean>(false);
 
-  const toggleVisible = () => {
-    const scrolled = document.documentElement.scrollTop;
-    if (scrolled > 300) {
-      setVisible(true);
-    } else if (scrolled <= 300) {
-      setVisible(false);
-    }
-  };
-
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
@@ -23,6 +14,9 @@ export default function ScrollToTop(): React.JSX.Element {
   };
 
   useEffect(() => {
+    const toggleVisible = () => {
+      setVisible(document.documentElement.scrollTop > 300);
+    };
     window.addEventListener("scroll", toggleVisible);
     return () => {
       window.removeEventListener("scroll", toggleVisible);
@@ -31,6 +25,7 @@ export default function ScrollToTop(): React.JSX.Element {
 
   return (
     <button
+      type="button"
       onClick={scrollToTop}
       className={clsx(
         "fixed bottom-8 right-8 flex h-10 w-10 items-center justify-center rounded-full bg-lcarsBlue-800 hover:bg-lcarsPurple-100",

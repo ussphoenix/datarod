@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { useQuery } from "@apollo/client/react";
 import {
   Breadcrumbs,
@@ -11,12 +9,12 @@ import {
 } from "@components";
 import { GET_TAGS } from "@queries";
 import type { TagType } from "@types";
+import { useInfiniteScroll } from "@utils/hooks";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
 
 export default function TagsView(): React.JSX.Element {
-  const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { tagType } = useParams();
   const { loading, data, fetchMore, error } = useQuery(GET_TAGS, {
     fetchPolicy: "network-only", // can't cache tag results because of inability to differentiate between tag types
@@ -24,25 +22,11 @@ export default function TagsView(): React.JSX.Element {
   });
   const tagDetails = getTagInfoForType(tagType?.toUpperCase() as TagType);
 
-  /**
-   * Bind scroll events to fetch more data when the user reaches the bottom
-   */
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolledTo = window.scrollY + window.innerHeight;
-      const threshold = 300;
-      if (document.body.scrollHeight - threshold <= scrolledTo) {
-        if (data?.tags?.pageInfo?.hasNextPage && !error && !loading) {
-          fetchMore({
-            variables: { after: data?.tags?.pageInfo?.endCursor },
-          });
-          setHasFetchedMore(true);
-        }
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [data]);
+  // Fetch more data when the user reaches the bottom
+  const hasFetchedMore = useInfiniteScroll(
+    !!data?.tags?.pageInfo?.hasNextPage && !error && !loading,
+    () => fetchMore({ variables: { after: data?.tags?.pageInfo?.endCursor } }),
+  );
 
   return (
     <>
@@ -59,10 +43,9 @@ export default function TagsView(): React.JSX.Element {
       />
 
       <div className="grid-col-1 grid gap-5 md:grid-cols-3">
-        {data &&
-          data?.tags?.edges?.map(({ node: tag }) => (
-            <TagCard tag={tag} key={tag?.id} />
-          ))}
+        {data?.tags?.edges?.map(({ node: tag }) => (
+          <TagCard tag={tag} key={tag?.id} />
+        ))}
       </div>
 
       {loading && (

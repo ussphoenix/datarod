@@ -1,4 +1,10 @@
-import { createContext, useContext, useState } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 
 interface RecentChannel {
   name: string;
@@ -27,28 +33,27 @@ export function RecentChannelProvider(props: React.PropsWithChildren) {
   const initialValue = JSON.parse(saved);
   const [state, setState] = useState<RecentChannel[]>(initialValue);
 
-  const addChannel: AddChannelInterface = (channel) => {
-    let newState = state;
-    if (state.filter((_channel) => _channel?.id == channel?.id)) {
-      // channel in history list, move to top if not most recent
-      if (state[0]?.id !== channel?.id) {
-        newState = newState.filter((_channel) => _channel?.id !== channel?.id);
-        newState.unshift(channel);
-      }
-    } else {
-      newState.unshift(channel);
-    }
-    setState(newState.slice(0, 6));
-    localStorage.setItem(
-      "recentChannels",
-      JSON.stringify(newState.slice(0, 6)),
-    );
-  };
+  useEffect(() => {
+    localStorage.setItem("recentChannels", JSON.stringify(state));
+  }, [state]);
 
-  const clearChannels: ClearChannelsInterface = () => {
+  const addChannel: AddChannelInterface = useCallback((channel) => {
+    setState((current) => {
+      // Already the most recent channel, nothing to reorder
+      if (current[0]?.id === channel?.id) {
+        return current;
+      }
+      // Move to the top of the history list, dropping any earlier visit
+      return [
+        channel,
+        ...current.filter((_channel) => _channel?.id !== channel?.id),
+      ].slice(0, 6);
+    });
+  }, []);
+
+  const clearChannels: ClearChannelsInterface = useCallback(() => {
     setState([]);
-    localStorage.setItem("recentChannels", JSON.stringify([]));
-  };
+  }, []);
 
   return (
     <RecentChannelContext.Provider
@@ -68,7 +73,7 @@ export function RecentChannelProvider(props: React.PropsWithChildren) {
  */
 export function useRecentChannels() {
   const context = useContext(RecentChannelContext);
-  if (context == undefined) {
+  if (context === undefined) {
     throw new Error(
       "useRecentChannels must be used inside of RecentChannelProvider",
     );

@@ -1,5 +1,3 @@
-import { useEffect, useState } from "react";
-
 import { useQuery } from "@apollo/client/react";
 import {
   type Breadcrumb,
@@ -13,12 +11,12 @@ import {
 import constants from "@constants";
 import { HashtagIcon } from "@heroicons/react/20/solid";
 import { GET_CHANNELS, GET_TAG } from "@queries";
+import { useInfiniteScroll } from "@utils/hooks";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
 
 export default function ChannelsView(): React.JSX.Element {
-  const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { tagId } = useParams();
 
   const { data: tagData, loading: tagLoading } = useQuery(GET_TAG, {
@@ -60,25 +58,12 @@ export default function ChannelsView(): React.JSX.Element {
       : []),
   ];
 
-  /**
-   * Bind scroll events to fetch more data when the user reaches the bottom
-   */
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolledTo = window.scrollY + window.innerHeight;
-      const threshold = 300;
-      if (document.body.scrollHeight - threshold <= scrolledTo) {
-        if (data?.channels?.pageInfo?.hasNextPage && !error && !loading) {
-          fetchMore({
-            variables: { after: data?.channels?.pageInfo?.endCursor },
-          });
-          setHasFetchedMore(true);
-        }
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [data]);
+  // Fetch more data when the user reaches the bottom
+  const hasFetchedMore = useInfiniteScroll(
+    !!data?.channels?.pageInfo?.hasNextPage && !error && !loading,
+    () =>
+      fetchMore({ variables: { after: data?.channels?.pageInfo?.endCursor } }),
+  );
 
   return (
     <>
@@ -91,10 +76,9 @@ export default function ChannelsView(): React.JSX.Element {
       )}
 
       <div className="grid-col-1 grid gap-5 md:grid-cols-3">
-        {data &&
-          data?.channels?.edges?.map(({ node: channel }) => (
-            <ChannelCard channel={channel} key={channel?.id} />
-          ))}
+        {data?.channels?.edges?.map(({ node: channel }) => (
+          <ChannelCard channel={channel} key={channel?.id} />
+        ))}
       </div>
 
       {loading && (

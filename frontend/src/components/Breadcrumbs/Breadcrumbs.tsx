@@ -1,8 +1,8 @@
 import { ChevronRightIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
+import { Fragment } from "react/jsx-runtime";
 import Skeleton from "react-loading-skeleton";
 import { NavLink } from "react-router-dom";
-import { Fragment } from "react/jsx-runtime";
 
 export interface Breadcrumb {
   name: React.ReactNode;
@@ -35,7 +35,7 @@ export default function Breadcrumbs(props: BreadcrumbProps): React.JSX.Element {
         <Skeleton className="h-5 w-16" />
       ) : (
         breadcrumbs?.map((item, index) => (
-          <Fragment key={index}>
+          <Fragment key={item.link}>
             <div>
               <NavLink
                 to={item.link}

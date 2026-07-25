@@ -11,7 +11,7 @@ export default function HomeView(): React.ReactNode {
 
   useEffect(() => {
     navigate(constants.ROUTES.HOME);
-  }, []);
+  }, [navigate]);
 
   return null;
 }

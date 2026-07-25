@@ -48,7 +48,7 @@ export function MeProvider(props: React.PropsWithChildren): React.JSX.Element {
  */
 export function useMe() {
   const context = useContext(MeContext);
-  if (context == undefined) {
+  if (context === undefined) {
     throw new Error("useMe must be used inside of MeProvider");
   }
   return context;

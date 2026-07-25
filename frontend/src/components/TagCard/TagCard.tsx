@@ -28,7 +28,7 @@ function positionFromId(string: string): string {
       "bg-right-bottom",
       "bg-top",
       "bg-bottom",
-    ][parseInt(simpleHash(string).slice(-1)[0])] || "bg-top"
+    ][Number.parseInt(simpleHash(string).slice(-1), 10)] || "bg-top"
   );
 }
 

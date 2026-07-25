@@ -1,0 +1,25 @@
+# https://editorconfig.org/
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+insert_final_newline = true
+trim_trailing_whitespace = true
+end_of_line = lf
+charset = utf-8
+
+[*.py]
+max_line_length = 88
+
+# Use 2 spaces for html, css, json files
+[*.{html,css,json,jsonc}]
+indent_size = 2
+
+# Makefiles always use tabs for indentation
+[Makefile]
+indent_style = tab
+
+[*.{yml,yaml}]
+indent_size = 2

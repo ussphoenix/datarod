@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { useQuery } from "@apollo/client/react";
 import {
@@ -12,38 +12,24 @@ import constants from "@constants";
 import { PlusIcon, TagIcon } from "@heroicons/react/20/solid";
 import { GET_TAGS } from "@queries";
 import type { TagType } from "@types";
+import { useInfiniteScroll } from "@utils/hooks";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { NavLink } from "react-router-dom";
 
 export default function AdminTagsView(): React.JSX.Element {
   const [activeTab, setActiveTab] = useState<TagType | null>("EVENTS");
-  const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { data, loading, error, fetchMore } = useQuery(GET_TAGS, {
     variables: {
       tagType: activeTab,
     },
   });
 
-  /**
-   * Bind scroll events to fetch more data when the user reaches the bottom
-   */
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolledTo = window.scrollY + window.innerHeight;
-      const threshold = 300;
-      if (document.body.scrollHeight - threshold <= scrolledTo) {
-        if (data?.tags?.pageInfo?.hasNextPage && !error && !loading) {
-          fetchMore({
-            variables: { after: data?.tags?.pageInfo?.endCursor },
-          });
-          setHasFetchedMore(true);
-        }
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [data]);
+  // Fetch more data when the user reaches the bottom
+  const hasFetchedMore = useInfiniteScroll(
+    !!data?.tags?.pageInfo?.hasNextPage && !error && !loading,
+    () => fetchMore({ variables: { after: data?.tags?.pageInfo?.endCursor } }),
+  );
 
   return (
     <>
@@ -57,6 +43,7 @@ export default function AdminTagsView(): React.JSX.Element {
         <div className="space-x-2">
           {Object.keys(constants.TAG_INFO).map((key) => (
             <button
+              key={key}
               type="button"
               className={clsx(
                 "rounded-2xl border px-2",

@@ -8,7 +8,7 @@ import { RecentChannelProvider } from "@providers/RecentChannelsProvider";
 import { ErrorView } from "@views/ErrorView";
 import { HomeView } from "@views/HomeView";
 import { NotFoundView } from "@views/NotFoundView";
-import { Outlet, RouterProvider, createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 
 import "react-loading-skeleton/dist/skeleton.css";

@@ -23,8 +23,8 @@ export default function ResultRow(props: ResultRowProps): React.JSX.Element {
   if (loading) {
     return (
       <>
-        {[...Array(3)].map((_, i) => (
-          <div key={i} className="my-4 flex items-center justify-between">
+        {[1, 2, 3].map((row) => (
+          <div key={row} className="my-4 flex items-center justify-between">
             <div className="w-1/2">
               <Skeleton className="h-8" />
             </div>

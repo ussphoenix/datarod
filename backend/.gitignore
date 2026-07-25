@@ -1,0 +1,17 @@
+# ───────────────────────── Python / backend ────────────────────────
+# SPA build output (emitted by Vite) + collected static
+spa/
+staticfiles/
+private_media/
+media/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.ruff_cache/
+.pytest_cache/
+.coverage
+.ropeproject
+htmlcov/
+legacy/

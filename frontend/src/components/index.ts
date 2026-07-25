@@ -1,5 +1,5 @@
 export { AuthRequired } from "./AuthRequired";
-export { Breadcrumbs, type Breadcrumb } from "./Breadcrumbs";
+export { type Breadcrumb, Breadcrumbs } from "./Breadcrumbs";
 export { ChannelCard } from "./ChannelCard";
 export { GridLoading } from "./GridLoading";
 export { Layout } from "./Layout";

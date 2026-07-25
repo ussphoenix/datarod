@@ -1,1 +1,1 @@
-export { default as Breadcrumbs, type Breadcrumb } from "./Breadcrumbs";
+export { type Breadcrumb, default as Breadcrumbs } from "./Breadcrumbs";

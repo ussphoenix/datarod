@@ -8,7 +8,12 @@ import App from "./App.tsx";
 
 import "./index.css";
 
-ReactDOM.createRoot(document.getElementById("root")!).render(
+const rootElement = document.getElementById("root");
+if (!rootElement) {
+  throw new Error("Unable to find #root element to mount the application");
+}
+
+ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <SkeletonTheme baseColor="#10171E" highlightColor="#15202B">
       <Suspense fallback={<SuspenseView />}>

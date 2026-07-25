@@ -6,7 +6,7 @@ export default function StaffRequired(
   const { children } = props;
   const { me } = useMe();
 
-  if (me && me?.isStaff) {
+  if (me?.isStaff) {
     return children;
   }
   return null;

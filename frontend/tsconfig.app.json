@@ -16,6 +16,7 @@
     "jsx": "react-jsx",
 
     /* Linting */
+    "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "erasableSyntaxOnly": true,
@@ -30,8 +31,8 @@
       "@types": ["./src/types.ts"],
       "@queries": ["./src/queries.ts"],
       "@providers/*": ["./src/providers/*"],
-      "@utils/*": ["./src/utils/*"],
-    },
+      "@utils/*": ["./src/utils/*"]
+    }
   },
-  "include": ["src/**/*"],
+  "include": ["src/**/*"]
 }

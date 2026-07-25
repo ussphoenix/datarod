@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 import { useQuery } from "@apollo/client/react";
 import {
@@ -14,6 +14,7 @@ import constants from "@constants";
 import { HashtagIcon } from "@heroicons/react/20/solid";
 import { useRecentChannels } from "@providers/RecentChannelsProvider";
 import { GET_MESSAGES } from "@queries";
+import { useInfiniteScroll } from "@utils/hooks";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { useParams } from "react-router-dom";
@@ -21,16 +22,16 @@ import { useParams } from "react-router-dom";
 export default function ChannelView(): React.JSX.Element {
   const { channelId } = useParams();
   const { addChannel } = useRecentChannels();
-  const [hasFetchedMore, setHasFetchedMore] = useState<boolean>(false);
   const { data, loading, error, fetchMore } = useQuery(GET_MESSAGES, {
     variables: { channel: channelId },
   });
+  const channel = data?.channel;
 
   useEffect(() => {
-    if (data?.channel) {
-      addChannel({ name: data.channel.name, id: data.channel.id });
+    if (channel) {
+      addChannel({ name: channel.name, id: channel.id });
     }
-  }, [data?.channel?.id]);
+  }, [channel, addChannel]);
 
   // Generate breadcrumb trail based on tag type
   const breadcrumbs: Breadcrumb[] = [
@@ -51,30 +52,17 @@ export default function ChannelView(): React.JSX.Element {
         ]
       : []),
     {
-      name: "#" + data?.channel?.name,
+      name: `#${data?.channel?.name}`,
       link: `${constants.ROUTES.CHANNEL}/${data?.channel?.id}`,
     },
   ];
 
-  /**
-   * Bind scroll events to fetch more data when the user reaches the bottom
-   */
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrolledTo = window.scrollY + window.innerHeight;
-      const threshold = 300;
-      if (document.body.scrollHeight - threshold <= scrolledTo) {
-        if (data?.messages?.pageInfo?.hasNextPage && !error && !loading) {
-          fetchMore({
-            variables: { after: data?.messages?.pageInfo?.endCursor },
-          });
-          setHasFetchedMore(true);
-        }
-      }
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [data]);
+  // Fetch more data when the user reaches the bottom
+  const hasFetchedMore = useInfiniteScroll(
+    !!data?.messages?.pageInfo?.hasNextPage && !error && !loading,
+    () =>
+      fetchMore({ variables: { after: data?.messages?.pageInfo?.endCursor } }),
+  );
 
   return (
     <>
@@ -86,10 +74,9 @@ export default function ChannelView(): React.JSX.Element {
         <Breadcrumbs breadcrumbs={breadcrumbs} />
       )}
 
-      {data &&
-        data?.messages?.edges?.map(({ node }) => (
-          <MessageRow key={node?.timestamp} message={node} />
-        ))}
+      {data?.messages?.edges?.map(({ node }) => (
+        <MessageRow key={node?.timestamp} message={node} />
+      ))}
 
       {!loading && !error && !data?.messages?.edges?.length && <NoContent />}
 

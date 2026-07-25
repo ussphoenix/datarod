@@ -25,44 +25,64 @@ const parseDate = (datestring?: string): string | null => {
   return parsed?.toLocaleString();
 };
 
+/**
+ * Discord markup delimiters, longest first so that `**` wins over `*`. The
+ * backreference requires a matching closing delimiter.
+ */
+const MARKUP_PATTERN = /(\*\*|__|~~|`|\*|_)(.+?)\1/g;
+
+const MARKUP_CLASSES: Record<string, string> = {
+  "**": "font-semibold",
+  __: "font-semibold",
+  "~~": "line-through",
+  "`": "font-mono bg-slate-800 p-1 text-sm rounded-md",
+  "*": "italic",
+  _: "italic",
+};
+
+/**
+ * Render Discord markup as React nodes. Message content is untrusted, so it is
+ * never assembled into an HTML string -- each delimited run becomes a real
+ * element and everything else stays a text node.
+ */
+const renderMarkup = (content: string): React.ReactNode[] => {
+  const nodes: React.ReactNode[] = [];
+  let lastIndex = 0;
+
+  for (const match of content.matchAll(MARKUP_PATTERN)) {
+    const [full, delimiter, inner] = match;
+    if (match.index > lastIndex) {
+      nodes.push(content.slice(lastIndex, match.index));
+    }
+    nodes.push(
+      <span
+        key={`${match.index}-${delimiter}`}
+        className={MARKUP_CLASSES[delimiter]}
+      >
+        {inner}
+      </span>,
+    );
+    lastIndex = match.index + full.length;
+  }
+
+  if (lastIndex < content.length) {
+    nodes.push(content.slice(lastIndex));
+  }
+
+  return nodes;
+};
+
 const parseMessageContent = (
   rawMessageContent?: DiscordMessage | null,
 ): React.ReactNode => {
-  let content = rawMessageContent?.content;
+  const content = rawMessageContent?.content;
   if (!content) return "";
 
   // Remove newline from start of message
-  content = content.replace(/^\n(.*?)/, "$1");
-
-  // Italic text (*text* or _text_)
-  content = content.replace(
-    /(\_|\*)(.*?)(\_|\*)/g,
-    '<span class="italic">$2</span>',
-  );
-
-  // Bold text (**text**)
-  content = content.replace(
-    /(\*\*)(.*?)(\*\*)/g,
-    '<span class="font-semibold">$2</span>',
-  );
-
-  // Code text (`text`)
-  content = content.replace(
-    /(\`)(.*?)(\`)/g,
-    '<span class="font-mono bg-slate-800 p-1 text-sm rounded-md">$2</span>',
-  );
-
-  // Strikethrough text (~~text~~)
-  content = content.replace(
-    /(\~\~)(.*?)(\~\~)/g,
-    '<span class="line-through">$2</span>',
-  );
-
   return (
-    <div
-      className="whitespace-pre-line"
-      dangerouslySetInnerHTML={{ __html: content }}
-    ></div>
+    <div className="whitespace-pre-line">
+      {renderMarkup(content.replace(/^\n/, ""))}
+    </div>
   );
 };
 
@@ -151,13 +171,14 @@ export default function MessageRow(props: MessageRowProps): React.JSX.Element {
             </span>
           )}
           {me?.isStaff && message?.nickname && (
-            <a
+            <button
+              type="button"
               className="cursor-pointer text-lcarsPurple-300 hover:text-lcarsBlue-200"
               title="Edit Nickname"
               onClick={() => setEditingNickname(!editingNickname)}
             >
               <PencilIcon className="size-4" />
-            </a>
+            </button>
           )}
           <span className="text-sm text-gray-400">
             {parseDate(message?.timestamp)}

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useLazyQuery } from "@apollo/client/react";
 import { Dialog, DialogPanel } from "@headlessui/react";
@@ -48,18 +48,19 @@ export default function SearchBar(): React.JSX.Element {
     }
   };
 
-  const handleClose = (): void => {
+  const handleClose = useCallback((): void => {
     setIsOpen(false);
     setSearchTerm("");
     setHasSearched(false);
-  };
+  }, []);
 
   /**
    * Close search results modal if user navigates to new path
    */
+  // biome-ignore lint/correctness/useExhaustiveDependencies: location is a change trigger, not a value the effect reads
   useEffect(() => {
     handleClose();
-  }, [location]);
+  }, [location, handleClose]);
 
   return (
     <>

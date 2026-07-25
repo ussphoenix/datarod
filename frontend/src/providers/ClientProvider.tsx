@@ -24,7 +24,7 @@ export function ClientProvider(
         errorPolicy: "all",
       },
       query: {
-        // @ts-ignore - for some reason the underlying FetchPolicy type in Apollo is missing this policy
+        // @ts-expect-error - for some reason the underlying FetchPolicy type in Apollo is missing this policy
         fetchPolicy: "cache-and-network",
         errorPolicy: "all",
       },

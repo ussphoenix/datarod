@@ -7,26 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "build-production": "tsc && vite build --mode=production",
-    "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
-  },
-  "prettier": {
-    "plugins": [
-      "@trivago/prettier-plugin-sort-imports",
-      "prettier-plugin-tailwindcss"
-    ],
-    "tailwindConfig": "./tailwind.config.js",
-    "tailwindAttributes": [
-      "className"
-    ],
-    "importOrder": [
-      "^react$",
-      "<THIRD_PARTY_MODULES>",
-      "^[./].+(?<!css)$",
-      "^.+\\.css$"
-    ],
-    "importOrderSeparation": true,
-    "importOrderSortSpecifiers": true
+    "lint": "tsc -b && biome check . --error-on-warnings",
+    "format": "biome check --write ."
   },
   "dependencies": {
     "@apollo/client": "^4.2.3",
@@ -47,22 +29,14 @@
     "yup": "^1.6.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.5.4",
     "@tailwindcss/vite": "^4.1.7",
-    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
-    "@types/node": "^25.9.3",
+    "@types/node": "^26.1.1",
     "@types/react": "^19.1.4",
     "@types/react-dom": "^19.1.5",
     "@vitejs/plugin-react": "^6.0.2",
     "autoprefixer": "^10.4.21",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-config-airbnb-typescript": "^18.0.0",
-    "eslint-config-prettier": "^10.1.5",
-    "eslint-plugin-jsx-a11y": "^6.10.2",
-    "eslint-plugin-react-hooks": "^4.6.2",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "prettier": "^3.5.3",
-    "prettier-plugin-tailwindcss": "^0.8.0",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vite": "^8.0.16"
   }
 }

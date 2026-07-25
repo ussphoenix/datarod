@@ -8,8 +8,7 @@ import { GET_TAG, MUTATE_TAG } from "@queries";
 import { getTagInfoForType } from "@utils/tags";
 import clsx from "clsx";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useParams } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import * as Yup from "yup";
 
@@ -25,7 +24,7 @@ export default function AdminTagView(): React.JSX.Element {
   });
   const [mutateTag] = useMutation(MUTATE_TAG, {
     onCompleted: (data) => {
-      if (data?.tag?.tag?.id != tagId) {
+      if (data?.tag?.tag?.id !== tagId) {
         navigate(`${constants.ROUTES.ADMIN_TAG}/${data?.tag?.tag?.id}`);
       }
       toast.success("Tag saved!");
@@ -201,6 +200,7 @@ export default function AdminTagView(): React.JSX.Element {
                     </button>
                     <img
                       className="rounded-md"
+                      alt={`Banner for ${data?.tag?.name}`}
                       src={`${constants.MEDIA_URL}/${data?.tag?.banner}`}
                     />
                   </div>

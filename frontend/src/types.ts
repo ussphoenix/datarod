@@ -1,4 +1,4 @@
-import constants from "@constants";
+import type constants from "@constants";
 
 export interface DiscordMessage {
   id: string;
